@@ -5,7 +5,7 @@ Showcase stories for every component in `dioxus-fx`.
 This crate is the entry crate for
 [dioxus-showcase](https://github.com/Dodecahedr0x/dioxus-showcase): it holds no
 UI of its own, only `#[story]` annotations that the CLI discovers and turns into
-a browsable gallery.
+a browsable gallery, published at <https://dodecahedr0x.github.io/dioxus-fx/>.
 
 ```sh
 dioxus-showcase check    # validate the annotations

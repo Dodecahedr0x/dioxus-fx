@@ -1,0 +1,110 @@
+name: Showcase
+
+# Publishes the component gallery to GitHub Pages at
+# https://dodecahedr0x.github.io/dioxus-fx/
+#
+# Pages must be set to build from Actions once, under
+# Settings → Pages → Build and deployment → Source: GitHub Actions.
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  # Deploys are not cancelled halfway: a half-applied Pages deployment is worse
+  # than a queued one. Pushes in quick succession wait rather than interrupt.
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: build the site
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      - uses: Swatinem/rust-cache@v2
+
+      # Both CLIs are pinned. The gallery's stories register themselves at link
+      # time, and whether those registrations survive into the wasm depends on
+      # linker behaviour — the failure mode is a gallery that builds, deploys
+      # and renders empty. Pinning keeps a published site reproducible; bump
+      # these deliberately rather than drifting onto whatever is newest.
+      - name: Install the Dioxus CLI
+        run: cargo install dioxus-cli --locked --version 0.7.9
+      - name: Install dioxus-showcase
+        run: cargo install dioxus-showcase-cli --locked --version 0.1.1
+
+      # Fails on annotations that no longer parse and on stories that would
+      # collide on a route id. `export` downgrades both to warnings, so without
+      # this the site would publish with stories missing from the tree.
+      - name: Check the annotations
+        run: dioxus-showcase check
+
+      # A project site is served from /<repo>, so asset URLs and router links
+      # need that prefix. For a user or org site (acme.github.io) drop the flag.
+      - name: Export the static site
+        run: dioxus-showcase export --out-dir dist/showcase --base-path /${{ github.event.repository.name }}
+
+      # The gallery can build and deploy completely empty: on wasm32 nothing in
+      # the binary references a symbol inside the gallery's rlib, so without LTO
+      # the linker drops every story registration and no error is raised
+      # anywhere. Checking the story titles are really in the wasm is the only
+      # signal that separates a working site from an empty one.
+      - name: Verify the stories reached the wasm
+        run: |
+          python3 - <<'PY'
+          import pathlib, re, sys
+
+          site = pathlib.Path("dist/showcase")
+          for required in ["index.html", "404.html", ".nojekyll"]:
+              if not (site / required).exists():
+                  sys.exit(f"missing {required} in the exported site")
+
+          wasm = sorted(site.rglob("*.wasm"))
+          if not wasm:
+              sys.exit("no wasm in the exported site")
+          blob = wasm[0].read_bytes()
+
+          titles = sorted({
+              t
+              for f in pathlib.Path("example/src").rglob("*.rs")
+              for t in re.findall(r'#\[story\(title = "([^"]+)"', f.read_text())
+          })
+          if not titles:
+              sys.exit("no #[story] titles found in example/src; the scan is broken")
+
+          missing = [t for t in titles if t.encode() not in blob]
+          print(f"{len(titles) - len(missing)}/{len(titles)} story titles present in {wasm[0].name}")
+          if missing:
+              sys.exit(
+                  f"{len(missing)} story title(s) absent from the wasm, so the published "
+                  f"gallery would be missing them: {missing[:10]}"
+              )
+          PY
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist/showcase
+
+  deploy:
+    name: deploy to Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

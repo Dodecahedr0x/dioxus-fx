@@ -29,6 +29,14 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   those components keep closing content mounted until its animation finishes.
   The crate gains no dependency; the rules match the attributes, not the crate.
 
+### Added
+
+- The gallery is published to GitHub Pages at <https://dodecahedr0x.github.io/dioxus-fx/>, rebuilt by the `Showcase`
+  workflow on every push to `master`. The workflow checks the annotations before
+  exporting, and refuses to deploy unless every story title is really present in
+  the compiled wasm — a gallery whose registrations were dropped at link time
+  builds and deploys perfectly happily while rendering nothing at all.
+
 ### Changed
 
 - The gallery builds against

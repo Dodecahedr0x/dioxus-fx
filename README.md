@@ -4,6 +4,7 @@
 [![docs.rs](https://img.shields.io/docsrs/dioxus-fx)](https://docs.rs/dioxus-fx)
 [![CI](https://github.com/Dodecahedr0x/dioxus-fx/actions/workflows/ci.yml/badge.svg)](https://github.com/Dodecahedr0x/dioxus-fx/actions/workflows/ci.yml)
 [![licence](https://img.shields.io/crates/l/dioxus-fx.svg)](#licence)
+[![gallery](https://img.shields.io/badge/gallery-live-8b5cf6)](https://dodecahedr0x.github.io/dioxus-fx/)
 
 Visual effects and animated components for [Dioxus](https://dioxuslabs.com):
 loaders, entrances, text reveals, pointer effects, and effects that layer over
@@ -139,9 +140,12 @@ dioxus-fx = { version = "0.1", default-features = false, features = ["loading"] 
 
 ## Gallery
 
+**<https://dodecahedr0x.github.io/dioxus-fx/>** — every component, live, with its props as controls.
+
 The gallery is a [dioxus-showcase](https://github.com/Dodecahedr0x/dioxus-showcase)
 app: every component is annotated with a `#[story]` in the `gallery` crate
-(`example/`), and the browsable site is generated from those annotations.
+(`example/`), and the browsable site is generated from those annotations. Pushing
+to `master` republishes it through the `Showcase` workflow.
 
 ```sh
 cargo install dioxus-showcase-cli --locked   # provides `dioxus-showcase`
@@ -155,8 +159,13 @@ dioxus-showcase dev      # live gallery at http://127.0.0.1:6111
 For a deployable static site:
 
 ```sh
-dioxus-showcase export   # → target/showcase/site
+dioxus-showcase export                          # → target/showcase/site
+dioxus-showcase export --base-path /dioxus-fx   # as published, under a sub-path
 ```
+
+`--base-path` has to match the sub-path the site is served from, or every asset
+URL and router link resolves against the wrong root. GitHub Pages serves this
+repo from `/dioxus-fx`, which is what the workflow passes.
 
 Every component, live, with its props as controls: change a spinner's size,
 colour or duration and the preview follows. Leave a control untouched and the
