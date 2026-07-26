@@ -30,7 +30,6 @@ that builds and launches empty with no error.
 
 | Path | What's in it |
 | --- | --- |
-| `src/lib.rs` | The `num` and `txt` control seeds every story shares |
 | `src/stage.rs` | The `#[provider]` wrapper and the demo content stories reuse |
 | `assets/photos/` | Placeholder artwork for the carousel stories |
 | `src/loading.rs` | 134 loader stories |
@@ -45,21 +44,22 @@ controls in the showcase shell:
 
 ```rust
 #[story(title = "Loading/IosSpinner", tags = ["loading"])]
-pub fn ios_spinner(size: f64, color: String, duration: f64) -> Element {
+pub fn ios_spinner(
+    #[default = 32.0] size: f64,
+    #[default = "currentColor"] color: String,
+    #[default = 1.0] duration: f64,
+) -> Element {
     rsx! {
-        IosSpinner {
-            size: num(size, 32.0),
-            color: txt(color, "currentColor"),
-            duration: num(duration, 1.0),
-        }
+        IosSpinner { size, color, duration }
     }
 }
 ```
 
-Controls are seeded from `dioxus_showcase::StoryArg`, which hands back `0` for
-numbers and `"Lorem Ipsum"` for strings — values that would render an invisible
-spinner. `num` and `txt` swap an untouched seed for the component's documented
-default, so a story opens on the real thing and still responds to the controls.
+Each parameter carries `#[default = …]` naming the value its control opens on,
+which is the component's own documented default. Without it a control opens on
+`StoryArg`'s placeholder seed — `0` for numbers, `"Lorem Ipsum"` for strings —
+so the number beside the preview would disagree with the component rendering
+next to it. `tests/coverage.rs` fails on a parameter that has no default.
 
 ## Images
 

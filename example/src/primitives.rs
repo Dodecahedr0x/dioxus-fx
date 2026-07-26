@@ -6,7 +6,6 @@
 //! is the whole claim the module makes. The primitives are unstyled, so each
 //! story brings enough CSS to see the shape it is animating.
 
-use crate::num;
 use dioxus::prelude::*;
 use dioxus_fx::primitives::*;
 use dioxus_primitives::accordion::{Accordion, AccordionContent, AccordionItem, AccordionTrigger};
@@ -48,13 +47,9 @@ fn Demo(children: Element) -> Element {
 /// The class on `DialogRoot` is what keeps the dialog mounted long enough to
 /// animate out; the one on `DialogContent` matches through its open ancestor.
 #[story(title = "Primitives/Dialog", tags = ["primitives"])]
-pub fn dialog(enter: f64, exit: f64) -> Element {
+pub fn dialog(#[default = 0.18] enter: f64, #[default = 0.14] exit: f64) -> Element {
     let mut open = use_signal(|| false);
-    let timing = format!(
-        "--dfx-enter:{}s;--dfx-exit:{}s;",
-        num(enter, 0.18),
-        num(exit, 0.14)
-    );
+    let timing = format!("--dfx-enter:{}s;--dfx-exit:{}s;", enter, exit);
 
     rsx! {
         Demo {
@@ -80,13 +75,9 @@ pub fn dialog(enter: f64, exit: f64) -> Element {
 
 /// A popover sliding out of its trigger, in the direction `data-side` implies.
 #[story(title = "Primitives/Popover", tags = ["primitives"])]
-pub fn popover(shift: f64, enter: f64) -> Element {
+pub fn popover(#[default = 6.0] shift: f64, #[default = 0.18] enter: f64) -> Element {
     let mut open = use_signal(|| false);
-    let timing = format!(
-        "--dfx-shift:{}px;--dfx-enter:{}s;",
-        num(shift, 6.0),
-        num(enter, 0.18)
-    );
+    let timing = format!("--dfx-shift:{}px;--dfx-enter:{}s;", shift, enter);
 
     rsx! {
         Demo {
@@ -108,8 +99,8 @@ pub fn popover(shift: f64, enter: f64) -> Element {
 
 /// A tooltip on hover, sliding up from its trigger.
 #[story(title = "Primitives/Tooltip", tags = ["primitives"])]
-pub fn tooltip(shift: f64) -> Element {
-    let timing = format!("--dfx-shift:{}px;", num(shift, 6.0));
+pub fn tooltip(#[default = 6.0] shift: f64) -> Element {
+    let timing = format!("--dfx-shift:{}px;", shift);
 
     rsx! {
         Demo {
@@ -130,9 +121,9 @@ pub fn tooltip(shift: f64) -> Element {
 
 /// A menu-style popover growing out of the trigger corner it is aligned to.
 #[story(title = "Primitives/Menu", tags = ["primitives"])]
-pub fn menu(enter: f64) -> Element {
+pub fn menu(#[default = 0.18] enter: f64) -> Element {
     let mut open = use_signal(|| false);
-    let timing = format!("--dfx-enter:{}s;", num(enter, 0.18));
+    let timing = format!("--dfx-enter:{}s;", enter);
 
     rsx! {
         Demo {
@@ -156,8 +147,8 @@ pub fn menu(enter: f64) -> Element {
 
 /// Accordion panels collapsing to the height they actually measure.
 #[story(title = "Primitives/Accordion", tags = ["primitives"])]
-pub fn accordion(enter: f64) -> Element {
-    let timing = format!("--dfx-enter:{}s;", num(enter, 0.22));
+pub fn accordion(#[default = 0.22] enter: f64) -> Element {
+    let timing = format!("--dfx-enter:{}s;", enter);
 
     rsx! {
         Demo {

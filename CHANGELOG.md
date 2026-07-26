@@ -42,6 +42,13 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   site is now one `dioxus-showcase export` rather than a build plus a `dx
   bundle`. Nothing in the published crate is affected; the gallery lives in
   `example/`.
+- Every story parameter now declares what its control opens on, with
+  `#[default = …]`, so a control and the preview beside it finally agree. They
+  never did: a control opened on `StoryArg`'s placeholder seed — `0`,
+  `"Lorem Ipsum"` — while the preview rendered the component's real default, and
+  the `num`/`txt` helpers that produced that preview also made `0` and
+  `"Lorem Ipsum"` unreachable inputs. Both helpers are gone. The attribute is
+  unreleased, so `dioxus-showcase` is pinned to a git revision until it ships.
 - `cargo test -p gallery` now checks the story registry itself, not just the
   source: that it is non-empty, that every written story reaches it, and that no
   two stories claim one route id. The failure this guards is silent — a story

@@ -182,3 +182,85 @@ fn no_two_stories_claim_the_same_id() {
     let duplicates = dioxus_showcase::registered_stories().duplicate_ids;
     assert!(duplicates.is_empty(), "duplicate story ids: {duplicates:?}");
 }
+
+/// The parameter list of each `#[story]` function in `source`, unsplit.
+///
+/// Scans to the matching `)` rather than the first one: a default such as
+/// `#[default = "rgba(255,255,255,.08)"]` puts parentheses inside the list.
+fn story_parameter_lists(source: &str) -> Vec<(String, String)> {
+    let mut lists = Vec::new();
+    for block in source.split("#[story(").skip(1) {
+        let Some(fn_at) = block.find("fn ") else {
+            continue;
+        };
+        let rest = &block[fn_at + 3..];
+        let Some(open) = rest.find('(') else { continue };
+        let name = rest[..open].trim().to_owned();
+
+        let (mut depth, mut in_str, mut end) = (0usize, false, None);
+        for (i, c) in rest[open..].char_indices() {
+            match c {
+                '"' => in_str = !in_str,
+                '(' if !in_str => depth += 1,
+                ')' if !in_str => {
+                    depth -= 1;
+                    if depth == 0 {
+                        end = Some(open + i);
+                        break;
+                    }
+                }
+                _ => {}
+            }
+        }
+        let Some(end) = end else { continue };
+        lists.push((name, rest[open + 1..end].to_owned()));
+    }
+    lists
+}
+
+/// Splits a parameter list on the commas that separate parameters, ignoring
+/// those inside a default expression or a string.
+fn split_parameters(list: &str) -> Vec<String> {
+    let (mut out, mut depth, mut in_str, mut start) = (Vec::new(), 0usize, false, 0usize);
+    for (i, c) in list.char_indices() {
+        match c {
+            '"' => in_str = !in_str,
+            '(' | '[' if !in_str => depth += 1,
+            ')' | ']' if !in_str => depth = depth.saturating_sub(1),
+            ',' if !in_str && depth == 0 => {
+                out.push(list[start..i].trim().to_owned());
+                start = i + 1;
+            }
+            _ => {}
+        }
+    }
+    out.push(list[start..].trim().to_owned());
+    out.into_iter().filter(|p| !p.is_empty()).collect()
+}
+
+#[test]
+fn every_story_parameter_declares_what_its_control_opens_on() {
+    // A parameter with no `#[default = …]` opens its control on `StoryArg`'s
+    // placeholder seed — `0`, `false`, `"Lorem Ipsum"` — which is a value the
+    // preview is not rendering. The control then disagrees with the component
+    // beside it, silently, for as long as nobody looks closely.
+    let src = Path::new(env!("CARGO_MANIFEST_DIR")).join("src");
+    let mut bare = Vec::new();
+
+    for file in rust_files(&src) {
+        let source = fs::read_to_string(&file).expect("read story source");
+        for (story, list) in story_parameter_lists(&source) {
+            for param in split_parameters(&list) {
+                if !param.starts_with("#[default") {
+                    bare.push(format!("{story}({param})"));
+                }
+            }
+        }
+    }
+
+    assert!(
+        bare.is_empty(),
+        "story parameters with no #[default], so their controls open on a \
+         placeholder rather than on the value the preview shows: {bare:#?}"
+    );
+}

@@ -13,3 +13,11 @@ authors = ["dode <hexadecifish@gmail.com>"]
 [workspace.dependencies]
 dioxus = { version = "0.7", default-features = false, features = ["macro", "signals", "html", "hooks", "document"] }
 dioxus-fx = { path = "dioxus-fx", version = "0.1.0" }
+
+# `#[default = …]` on a story parameter is unreleased. Without it every control
+# in the gallery opens on `StoryArg`'s placeholder seed rather than on the value
+# the preview is rendering. Swap this for a plain version once it ships.
+[patch.crates-io]
+dioxus-showcase = { git = "https://github.com/Dodecahedr0x/dioxus-showcase", rev = "b5e8e618b3ea053c18c9dab1d5e6731efc1bdafe" }
+dioxus-showcase-core = { git = "https://github.com/Dodecahedr0x/dioxus-showcase", rev = "b5e8e618b3ea053c18c9dab1d5e6731efc1bdafe" }
+dioxus-showcase-macros = { git = "https://github.com/Dodecahedr0x/dioxus-showcase", rev = "b5e8e618b3ea053c18c9dab1d5e6731efc1bdafe" }

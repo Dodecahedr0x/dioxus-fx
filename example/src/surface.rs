@@ -5,7 +5,6 @@
 //! Select the text and follow the link with the effect running — that is the
 //! point of the module.
 
-use crate::{num, txt};
 use dioxus::prelude::*;
 use dioxus_fx::surface::*;
 use dioxus_showcase::prelude::*;
@@ -43,14 +42,19 @@ pub fn Panel(children: Element) -> Element {
 
 /// A pane of frost that melts clear wherever the pointer goes.
 #[story(title = "Surface/Frost", tags = ["surface"])]
-pub fn frost(blur: f64, melt: f64, tint: String, intensity: f64) -> Element {
+pub fn frost(
+    #[default = 9.0] blur: f64,
+    #[default = 130.0] melt: f64,
+    #[default = "rgba(214,236,255,.26)"] tint: String,
+    #[default = 1.0] intensity: f64,
+) -> Element {
     rsx! {
         Frost {
             class: "story-card",
-            blur: num(blur, 9.0),
-            melt: num(melt, 130.0),
-            tint: txt(tint, "rgba(214,236,255,.26)"),
-            intensity: num(intensity, 1.0),
+            blur,
+            melt,
+            tint,
+            intensity,
             Panel {}
         }
     }
@@ -58,9 +62,9 @@ pub fn frost(blur: f64, melt: f64, tint: String, intensity: f64) -> Element {
 
 /// A glass puck that follows the pointer and sharpens what is under it.
 #[story(title = "Surface/Lens", tags = ["surface"])]
-pub fn lens(size: f64, intensity: f64) -> Element {
+pub fn lens(#[default = 160.0] size: f64, #[default = 1.0] intensity: f64) -> Element {
     rsx! {
-        Lens { class: "story-card", size: num(size, 160.0), intensity: num(intensity, 1.0),
+        Lens { class: "story-card", size: size, intensity: intensity,
             Panel {}
         }
     }
@@ -68,14 +72,19 @@ pub fn lens(size: f64, intensity: f64) -> Element {
 
 /// Rings that spread from every click and bend the content they cross.
 #[story(title = "Surface/Ripple", tags = ["surface"])]
-pub fn ripple(size: f64, duration: f64, color: String, intensity: f64) -> Element {
+pub fn ripple(
+    #[default = 320.0] size: f64,
+    #[default = 0.9] duration: f64,
+    #[default = "rgba(255,255,255,.55)"] color: String,
+    #[default = 1.0] intensity: f64,
+) -> Element {
     rsx! {
         Ripple {
             class: "story-card",
-            size: num(size, 320.0),
-            duration: num(duration, 0.9),
-            color: txt(color, "rgba(255,255,255,.55)"),
-            intensity: num(intensity, 1.0),
+            size,
+            duration,
+            color,
+            intensity,
             Panel {}
         }
     }
@@ -83,11 +92,11 @@ pub fn ripple(size: f64, duration: f64, color: String, intensity: f64) -> Elemen
 
 /// A corner that lifts on hover to show the layer underneath.
 #[story(title = "Surface/Peel", tags = ["surface"])]
-pub fn peel(size: f64) -> Element {
+pub fn peel(#[default = 96.0] size: f64) -> Element {
     rsx! {
         Peel {
             class: "story-card",
-            size: num(size, 96.0),
+            size,
             beneath: rsx! {
                 div {
                     style: "width:100%;height:100%;display:flex;align-items:flex-end;\
@@ -111,11 +120,11 @@ pub fn peel(size: f64) -> Element {
 
 /// Which corner lifts is a prop; here it is the bottom-left one.
 #[story(title = "Surface/Peel/BottomLeft", tags = ["surface"])]
-pub fn peel_bottom_left(size: f64) -> Element {
+pub fn peel_bottom_left(#[default = 96.0] size: f64) -> Element {
     rsx! {
         Peel {
             class: "story-card",
-            size: num(size, 96.0),
+            size,
             corner: PeelCorner::BottomLeft,
             beneath: rsx! {
                 div {
@@ -140,9 +149,13 @@ pub fn peel_bottom_left(size: f64) -> Element {
 
 /// Worn tape playback: scanlines, chroma bleed, head noise and grain.
 #[story(title = "Surface/Vhs", tags = ["surface"])]
-pub fn vhs(line: f64, shift: f64, intensity: f64) -> Element {
+pub fn vhs(
+    #[default = 3.0] line: f64,
+    #[default = 1.6] shift: f64,
+    #[default = 1.0] intensity: f64,
+) -> Element {
     rsx! {
-        Vhs { class: "story-card", line: num(line, 3.0), shift: num(shift, 1.6), intensity: num(intensity, 1.0),
+        Vhs { class: "story-card", line: line, shift: shift, intensity: intensity,
             Panel {}
         }
     }
@@ -150,14 +163,19 @@ pub fn vhs(line: f64, shift: f64, intensity: f64) -> Element {
 
 /// Broadcast glitch bursts, idle in between.
 #[story(title = "Surface/Glitch", tags = ["surface"])]
-pub fn glitch(period: f64, shift: f64, bands: usize, intensity: f64) -> Element {
+pub fn glitch(
+    #[default = 6.0] period: f64,
+    #[default = 4.0] shift: f64,
+    #[default = 3] bands: usize,
+    #[default = 1.0] intensity: f64,
+) -> Element {
     rsx! {
         Glitch {
             class: "story-card",
-            period: num(period, 6.0),
-            shift: num(shift, 4.0),
-            bands: num(bands, 3),
-            intensity: num(intensity, 1.0),
+            period,
+            shift,
+            bands,
+            intensity,
             Panel {}
         }
     }
@@ -165,14 +183,19 @@ pub fn glitch(period: f64, shift: f64, bands: usize, intensity: f64) -> Element 
 
 /// Embers and heat haze rising over the content.
 #[story(title = "Surface/Blaze", tags = ["surface"])]
-pub fn blaze(color: String, sparks: usize, duration: f64, intensity: f64) -> Element {
+pub fn blaze(
+    #[default = "#ff7a18"] color: String,
+    #[default = 14] sparks: usize,
+    #[default = 3.2] duration: f64,
+    #[default = 1.0] intensity: f64,
+) -> Element {
     rsx! {
         Blaze {
             class: "story-card",
-            color: txt(color, "#ff7a18"),
-            sparks: num(sparks, 14),
-            duration: num(duration, 3.2),
-            intensity: num(intensity, 1.0),
+            color,
+            sparks,
+            duration,
+            intensity,
             Panel {}
         }
     }
@@ -180,9 +203,9 @@ pub fn blaze(color: String, sparks: usize, duration: f64, intensity: f64) -> Ele
 
 /// A retro dither screen, the one effect here that never animates.
 #[story(title = "Surface/Halftone", tags = ["surface"])]
-pub fn halftone(cell: f64, intensity: f64) -> Element {
+pub fn halftone(#[default = 4.0] cell: f64, #[default = 1.0] intensity: f64) -> Element {
     rsx! {
-        Halftone { class: "story-card", cell: num(cell, 4.0), intensity: num(intensity, 1.0),
+        Halftone { class: "story-card", cell: cell, intensity: intensity,
             Panel {}
         }
     }
@@ -190,9 +213,9 @@ pub fn halftone(cell: f64, intensity: f64) -> Element {
 
 /// The same screen with `mono` off, so the dots keep their colour.
 #[story(title = "Surface/Halftone/Colour", tags = ["surface"])]
-pub fn halftone_colour(cell: f64, intensity: f64) -> Element {
+pub fn halftone_colour(#[default = 4.0] cell: f64, #[default = 1.0] intensity: f64) -> Element {
     rsx! {
-        Halftone { class: "story-card", cell: num(cell, 4.0), mono: false, intensity: num(intensity, 1.0),
+        Halftone { class: "story-card", cell: cell, mono: false, intensity: intensity,
             Panel {}
         }
     }
