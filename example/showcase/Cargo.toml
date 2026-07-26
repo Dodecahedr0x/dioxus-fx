@@ -1,25 +1,15 @@
 [package]
 name = "dioxus-fx-showcase"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 publish = false
 
 [workspace]
 
-# This app is its own workspace, so the repository root's patch does not reach
-# it. Without this the gallery here compiles against the published macro, which
-# does not know `#[default = …]` on a story parameter — every story in
-# `showcase_entry` then fails to build on an unknown parameter attribute.
-[patch.crates-io]
-dioxus-showcase = { git = "https://github.com/Dodecahedr0x/dioxus-showcase", rev = "b5e8e618b3ea053c18c9dab1d5e6731efc1bdafe" }
-dioxus-showcase-core = { git = "https://github.com/Dodecahedr0x/dioxus-showcase", rev = "b5e8e618b3ea053c18c9dab1d5e6731efc1bdafe" }
-dioxus-showcase-macros = { git = "https://github.com/Dodecahedr0x/dioxus-showcase", rev = "b5e8e618b3ea053c18c9dab1d5e6731efc1bdafe" }
-dioxus-showcase-ui = { git = "https://github.com/Dodecahedr0x/dioxus-showcase", rev = "b5e8e618b3ea053c18c9dab1d5e6731efc1bdafe" }
-
 [dependencies]
 dioxus = { version = "0.7", features = ["web", "router"] }
-dioxus-showcase = "0.1.0"
-dioxus-showcase-ui = "0.1.0"
+dioxus-showcase = "0.1.1"
+dioxus-showcase-ui = "0.1.1"
 showcase_entry = { package = "gallery", path = ".." }
 
 # LTO IS LOAD-BEARING ON WASM. DO NOT REMOVE IT.

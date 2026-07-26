@@ -32,7 +32,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 
 - The gallery builds against
-  [dioxus-showcase](https://github.com/Dodecahedr0x/dioxus-showcase) 0.1.0, up
+  [dioxus-showcase](https://github.com/Dodecahedr0x/dioxus-showcase) 0.1.1, up
   from 0.0.7. Stories now register themselves at link time rather than through
   generated glue, so `example/showcase/` was rescaffolded rather than migrated:
   its `Cargo.toml` and `src/main.rs` are written once and never rewritten, and
@@ -47,8 +47,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   never did: a control opened on `StoryArg`'s placeholder seed — `0`,
   `"Lorem Ipsum"` — while the preview rendered the component's real default, and
   the `num`/`txt` helpers that produced that preview also made `0` and
-  `"Lorem Ipsum"` unreachable inputs. Both helpers are gone. The attribute is
-  unreleased, so `dioxus-showcase` is pinned to a git revision until it ships.
+  `"Lorem Ipsum"` unreachable inputs. Both helpers are gone. The attribute ships
+  in dioxus-showcase 0.1.1.
 - `cargo test -p gallery` now checks the story registry itself, not just the
   source: that it is non-empty, that every written story reaches it, and that no
   two stories claim one route id. The failure this guards is silent — a story

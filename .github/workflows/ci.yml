@@ -85,7 +85,7 @@ jobs:
       # Pinned: dioxus-showcase is 0.x alpha and ships breaking changes in
       # minor releases, so the CLI has to match the library the gallery builds
       # against.
-      - run: cargo install dioxus-showcase-cli --locked --version 0.1.0
+      - run: cargo install dioxus-showcase-cli --locked --version 0.1.1
       # Catches annotations that no longer parse, and stories that would collide
       # on a route id.
       - run: dioxus-showcase check

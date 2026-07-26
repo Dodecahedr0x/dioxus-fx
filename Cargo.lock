@@ -982,8 +982,9 @@ dependencies = [
 
 [[package]]
 name = "dioxus-showcase"
-version = "0.1.0"
-source = "git+https://github.com/Dodecahedr0x/dioxus-showcase?rev=b5e8e618b3ea053c18c9dab1d5e6731efc1bdafe#b5e8e618b3ea053c18c9dab1d5e6731efc1bdafe"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1424ae650a9fdfadc64602fd2346a0a0bce1e76356f5bad96428c5c05d779f25"
 dependencies = [
  "dioxus",
  "dioxus-showcase-core",
@@ -993,8 +994,9 @@ dependencies = [
 
 [[package]]
 name = "dioxus-showcase-core"
-version = "0.1.0"
-source = "git+https://github.com/Dodecahedr0x/dioxus-showcase?rev=b5e8e618b3ea053c18c9dab1d5e6731efc1bdafe#b5e8e618b3ea053c18c9dab1d5e6731efc1bdafe"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "35a7306ca6475e5e01b3dee3f6ad367b6d3509f8da9e633bfcd65102622d7549"
 dependencies = [
  "serde",
  "serde_json",
@@ -1003,8 +1005,9 @@ dependencies = [
 
 [[package]]
 name = "dioxus-showcase-macros"
-version = "0.1.0"
-source = "git+https://github.com/Dodecahedr0x/dioxus-showcase?rev=b5e8e618b3ea053c18c9dab1d5e6731efc1bdafe#b5e8e618b3ea053c18c9dab1d5e6731efc1bdafe"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "755853abdcf05ef23558d95409144c3b90d9f43fdb9f66ecd9dc0f36919389a5"
 dependencies = [
  "dioxus",
  "proc-macro2",

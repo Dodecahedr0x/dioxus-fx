@@ -10,7 +10,7 @@ publish = false
 [dependencies]
 dioxus = { version = "0.7", features = ["web"] }
 dioxus-fx = { workspace = true }
-dioxus-showcase = "0.1.0"
+dioxus-showcase = "0.1.1"
 # The crate behind https://dioxuslabs.com/components. Only 0.0.0 — a placeholder
 # — is on crates.io, so the `primitives` stories build against the repository,
 # pinned to a revision. The library itself does not depend on it: the add-on is
