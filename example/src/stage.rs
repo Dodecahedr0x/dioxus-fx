@@ -53,28 +53,26 @@ pub fn Check() -> Element {
     }
 }
 
-/// Locally drawn gradients rather than remote photos, so the carousels work
+/// The slides the carousel stories share: a local placeholder, a caption and a
+/// timestamp each.
+///
+/// The artwork is a stand-in. To use real images, drop them into
+/// `example/assets/photos/` and point these paths at them — `asset!` resolves at
+/// compile time, so the extension is part of the path and has to match the file
+/// on disk.
+const PHOTOS: [(Asset, &str, &str); 5] = [
+    (asset!("/assets/photos/photo-1.svg"), "Sunset", "Today"),
+    (asset!("/assets/photos/photo-2.svg"), "Dusk", "1d ago"),
+    (asset!("/assets/photos/photo-3.svg"), "Forest", "1w ago"),
+    (asset!("/assets/photos/photo-4.svg"), "Sunlight", "1m ago"),
+    (asset!("/assets/photos/photo-5.svg"), "Hills", "1y ago"),
+];
+
+/// Bundled placeholders rather than remote photos, so the carousels work
 /// offline and in an exported site.
 pub fn photos() -> Vec<CardItem> {
-    const GRADIENTS: [(&str, &str, &str); 5] = [
-        ("#f97316", "#ec4899", "Sunset"),
-        ("#0ea5e9", "#6366f1", "Dusk"),
-        ("#22c55e", "#14b8a6", "Forest"),
-        ("#eab308", "#f97316", "Sunlight"),
-        ("#8b5cf6", "#0ea5e9", "Hills"),
-    ];
-    const DATES: [&str; 5] = ["Today", "1d ago", "1w ago", "1m ago", "1y ago"];
-    GRADIENTS
+    PHOTOS
         .iter()
-        .zip(DATES)
-        .map(|((from, to, title), date)| {
-            let svg = format!(
-                "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 3 4'>\
-                 <defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'>\
-                 <stop offset='0' stop-color='{from}'/><stop offset='1' stop-color='{to}'/>\
-                 </linearGradient></defs><rect width='3' height='4' fill='url(%23g)'/></svg>"
-            );
-            CardItem::new(format!("data:image/svg+xml,{svg}"), *title).with_date(date)
-        })
+        .map(|(src, title, date)| CardItem::new(src.to_string(), *title).with_date(*date))
         .collect()
 }
