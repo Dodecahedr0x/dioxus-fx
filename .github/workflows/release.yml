@@ -1,0 +1,69 @@
+name: Release
+
+# Publishes to crates.io when a `v*` tag is pushed. Set the CARGO_REGISTRY_TOKEN
+# repository secret to a crates.io API token with publish rights before the
+# first release.
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Package and verify without publishing
+        type: boolean
+        default: true
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  verify:
+    name: verify
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo fmt --all --check
+      - run: cargo clippy --workspace --all-targets --all-features -- -D warnings
+      - run: cargo test --workspace --all-features
+
+      # A tag must name the version it publishes, or the release history lies.
+      - name: Check the tag matches the crate version
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          crate=$(cargo metadata --no-deps --format-version 1 \
+            | python3 -c 'import json,sys; print(next(p["version"] for p in json.load(sys.stdin)["packages"] if p["name"]=="dioxus-micro-transitions"))')
+          tag="${GITHUB_REF_NAME#v}"
+          if [ "$crate" != "$tag" ]; then
+            echo "tag $tag does not match crate version $crate" >&2
+            exit 1
+          fi
+
+  publish:
+    name: publish
+    needs: verify
+    runs-on: ubuntu-latest
+    environment: crates-io
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Dry run
+        if: inputs.dry_run
+        run: cargo publish -p dioxus-micro-transitions --dry-run
+
+      - name: Publish
+        if: startsWith(github.ref, 'refs/tags/v') && !inputs.dry_run
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+        run: cargo publish -p dioxus-micro-transitions
+
+      - name: Create the GitHub release
+        if: startsWith(github.ref, 'refs/tags/v') && !inputs.dry_run
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" --generate-notes --verify-tag
