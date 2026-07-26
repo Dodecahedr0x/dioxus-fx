@@ -152,11 +152,10 @@ dioxus-showcase check    # validate the annotations
 dioxus-showcase dev      # live gallery at http://127.0.0.1:6111
 ```
 
-For a static site, regenerate the app and bundle it:
+For a deployable static site:
 
 ```sh
-dioxus-showcase build
-(cd example/showcase && dx bundle --platform web --release)   # → example/showcase/dist/public
+dioxus-showcase export   # → target/showcase/site
 ```
 
 Every component, live, with its props as controls: change a spinner's size,
@@ -164,7 +163,7 @@ colour or duration and the preview follows. Leave a control untouched and the
 story renders the component's documented default.
 
 Adding a component means adding its story — `cargo test -p gallery` fails on any
-component that has none.
+component that has none, and on any story that compiles but never registers.
 
 ## Documentation
 

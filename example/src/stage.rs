@@ -9,7 +9,7 @@ use dioxus_showcase::prelude::*;
 /// Components inject the CSS they need on first use, so this is not required to
 /// make them work; mounting [`FxStyle`] up front just keeps the exported
 /// static site from flashing unstyled markup as stories mount.
-#[provider(index = 0)]
+#[provider(order = 0)]
 #[component]
 pub fn StoryStage(children: Element) -> Element {
     rsx! {

@@ -982,20 +982,21 @@ dependencies = [
 
 [[package]]
 name = "dioxus-showcase"
-version = "0.0.7"
+version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4b81034d4491eae442b4a9795838a520dcf39422a94ca4515af5140b98efdce5"
+checksum = "bf5349895d345dfe3ec79d9989746adf336e54149053135fec9ec35f3845c6da"
 dependencies = [
  "dioxus",
  "dioxus-showcase-core",
  "dioxus-showcase-macros",
+ "inventory",
 ]
 
 [[package]]
 name = "dioxus-showcase-core"
-version = "0.0.7"
+version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "99061be7c84f39a820dcce28e66c4d37765a3251ca9d9ef2d90b6c3480d3f639"
+checksum = "fdec806a2c0bfa539648a41573fd389015a668e204758ff7ae94da910ae2466d"
 dependencies = [
  "serde",
  "serde_json",
@@ -1004,9 +1005,9 @@ dependencies = [
 
 [[package]]
 name = "dioxus-showcase-macros"
-version = "0.0.7"
+version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7a81a072595335e092b0fe164037d9874651e2ddd09ab53f62da14942ffc3ddc"
+checksum = "c5dcd84d076d6cd31051d08f93736e525ee8d2bb61e545808852ab73ff4eedcb"
 dependencies = [
  "dioxus",
  "proc-macro2",

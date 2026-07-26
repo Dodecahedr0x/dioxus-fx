@@ -31,6 +31,21 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- The gallery builds against
+  [dioxus-showcase](https://github.com/Dodecahedr0x/dioxus-showcase) 0.1.0, up
+  from 0.0.7. Stories now register themselves at link time rather than through
+  generated glue, so `example/showcase/` was rescaffolded rather than migrated:
+  its `Cargo.toml` and `src/main.rs` are written once and never rewritten, and
+  both carry `lto` in the profile blocks, which is load-bearing — without it the
+  wasm linker drops every registration and the gallery launches empty with no
+  error. `#[provider(index = 0)]` became `#[provider(order = 0)]`, and a static
+  site is now one `dioxus-showcase export` rather than a build plus a `dx
+  bundle`. Nothing in the published crate is affected; the gallery lives in
+  `example/`.
+- `cargo test -p gallery` now checks the story registry itself, not just the
+  source: that it is non-empty, that every written story reaches it, and that no
+  two stories claim one route id. The failure this guards is silent — a story
+  that compiles but never registers is indistinguishable from one never written.
 - Renamed from `dioxus-micro-transitions` to `dioxus-fx`. "Micro-transitions"
   described the original component set; it does not describe 134 loaders, three
   carousels, a headless-component stylesheet and a set of effects that layer

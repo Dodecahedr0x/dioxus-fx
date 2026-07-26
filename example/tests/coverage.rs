@@ -1,9 +1,19 @@
-//! Every component in the library must have a showcase story.
+//! Every component in the library must have a showcase story, and every story
+//! written must reach the gallery.
 //!
-//! The gallery is generated from `#[story]` annotations, so a component with no
-//! story silently disappears from it. This test reads both sides as source and
-//! fails with the names that are missing, rather than letting the gap ship.
+//! Those are two different facts. A component with no `#[story]` silently
+//! disappears from the gallery, which the source scans below catch. Separately,
+//! since dioxus-showcase 0.1.0 a story reaches the shell by registering itself
+//! at link time rather than through generated glue, so a story can be written,
+//! compile, and still never appear — with no error anywhere. The registry
+//! assertions at the bottom catch that.
 
+// LOAD-BEARING, not an unused import. Integration tests link this crate as an
+// rlib, and without a reference to it the linker never selects its archive
+// member, dropping every `inventory` registration inside it — the same
+// mechanism the generated showcase app pins `lto` to defeat on wasm32. Remove
+// this line and the registry reads as empty rather than failing to build.
+use gallery as _;
 use std::fs;
 use std::path::{Path, PathBuf};
 
@@ -43,28 +53,37 @@ fn library_components() -> Vec<String> {
     names
 }
 
-/// Every component named by a `#[story(title = "...")]` in this crate.
-fn showcased_components() -> Vec<String> {
+/// Every `#[story(title = "...")]` title written in this crate's source.
+fn fs_story_titles() -> Vec<String> {
     let src = Path::new(env!("CARGO_MANIFEST_DIR")).join("src");
-    let mut names = Vec::new();
+    let mut titles = Vec::new();
     for file in rust_files(&src) {
         let source = fs::read_to_string(&file).expect("read story source");
         for block in source.split("#[story(title = \"").skip(1) {
             let title = block.split('"').next().expect("story title is terminated");
-            // The `Primitives` category demonstrates the state-attribute
-            // stylesheet on components from `dioxus-primitives`, so its titles
-            // name those rather than anything this workspace defines.
-            if title.starts_with("Primitives/") {
-                continue;
-            }
-            // Every other title reads `Category/Component` or
-            // `Category/Component/Variant`; the component is the second segment.
-            let component = title
-                .split('/')
-                .nth(1)
-                .expect("story title names a component");
-            names.push(component.to_owned());
+            titles.push(title.to_owned());
         }
+    }
+    titles
+}
+
+/// Every component named by a `#[story(title = "...")]` in this crate.
+fn showcased_components() -> Vec<String> {
+    let mut names = Vec::new();
+    for title in fs_story_titles() {
+        // The `Primitives` category demonstrates the state-attribute stylesheet
+        // on components from `dioxus-primitives`, so its titles name those
+        // rather than anything this workspace defines.
+        if title.starts_with("Primitives/") {
+            continue;
+        }
+        // Every other title reads `Category/Component` or
+        // `Category/Component/Variant`; the component is the second segment.
+        let component = title
+            .split('/')
+            .nth(1)
+            .expect("story title names a component");
+        names.push(component.to_owned());
     }
     names.sort();
     names.dedup();
@@ -104,4 +123,62 @@ fn every_story_names_a_real_component() {
         stale.is_empty(),
         "stories for components that no longer exist: {stale:?}"
     );
+}
+
+/// Every story title the macros actually registered at link time.
+///
+/// The source scan above proves a `#[story]` was *written*; this proves it was
+/// *registered*. Since 0.1.0 those are separate facts — stories reach the shell
+/// through `inventory` rather than through generated glue, and a registration
+/// that fails to link produces an empty gallery with no error anywhere, which is
+/// indistinguishable from having annotated nothing.
+fn registered_titles() -> Vec<String> {
+    let mut titles: Vec<String> = dioxus_showcase::registered_stories()
+        .stories
+        .into_iter()
+        .map(|story| story.definition.title)
+        .collect();
+    titles.sort();
+    titles.dedup();
+    titles
+}
+
+#[test]
+fn the_story_registry_is_not_empty() {
+    let registered = registered_titles();
+    assert!(
+        !registered.is_empty(),
+        "no stories registered: the gallery would render empty with no error"
+    );
+}
+
+#[test]
+fn every_written_story_reaches_the_registry() {
+    // `showcased_components()` reads titles out of the source; this reads them
+    // out of the linked binary. A title in one and not the other means a story
+    // was written but never registered, or registered under another name.
+    let mut written: Vec<String> = fs_story_titles();
+    written.sort();
+    written.dedup();
+
+    let registered = registered_titles();
+    let missing: Vec<&String> = written.iter().filter(|t| !registered.contains(t)).collect();
+    let extra: Vec<&String> = registered.iter().filter(|t| !written.contains(t)).collect();
+
+    assert!(
+        missing.is_empty(),
+        "written but never registered: {missing:?}"
+    );
+    assert!(
+        extra.is_empty(),
+        "registered but not found in source: {extra:?}"
+    );
+}
+
+#[test]
+fn no_two_stories_claim_the_same_id() {
+    // Colliding ids stopped panicking in 0.1.0: the shell renders a banner and
+    // both stories stay navigable, so a collision is now easy to ship unnoticed.
+    let duplicates = dioxus_showcase::registered_stories().duplicate_ids;
+    assert!(duplicates.is_empty(), "duplicate story ids: {duplicates:?}");
 }

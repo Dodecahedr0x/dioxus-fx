@@ -11,11 +11,20 @@ a browsable gallery.
 dioxus-showcase check    # validate the annotations
 dioxus-showcase dev      # live gallery at http://127.0.0.1:6111
 dioxus-showcase build    # regenerate example/showcase/ without serving
+dioxus-showcase export   # deployable static site in target/showcase/site
 ```
 
 `DioxusShowcase.toml` at the repository root points at this crate, so no `init`
-step is needed. Everything under `example/showcase/` is generated and ignored by
-git apart from its `Cargo.toml`.
+step is needed. `example/showcase/` is git-ignored apart from its `Cargo.toml`,
+but note that only `src/generated.rs` is rewritten on every build — the shell's
+`Cargo.toml` and `src/main.rs` are written once and then left alone, so an
+upgrade of `dioxus-showcase` will not migrate them. Deleting the directory and
+re-running `dioxus-showcase build` scaffolds it fresh.
+
+Those two files carry `lto` in both profile blocks, which is load-bearing rather
+than an optimisation: stories register themselves at link time, and without LTO
+the wasm linker drops every registration in this crate's rlib, leaving a gallery
+that builds and launches empty with no error.
 
 ## Layout
 
@@ -27,7 +36,7 @@ git apart from its `Cargo.toml`.
 | `src/loading.rs` | 134 loader stories |
 | `src/entrance.rs`, `src/text.rs`, … | One module per library module |
 | `src/primitives.rs` | The state-attribute add-on, on real `dioxus-primitives` components |
-| `tests/coverage.rs` | Fails if a library component has no story |
+| `tests/coverage.rs` | Fails if a library component has no story, or if a story never reaches the registry |
 
 ## Writing a story
 

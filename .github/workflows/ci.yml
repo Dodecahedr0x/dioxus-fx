@@ -82,7 +82,10 @@ jobs:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
-      - run: cargo install dioxus-showcase-cli --locked
+      # Pinned: dioxus-showcase is 0.x alpha and ships breaking changes in
+      # minor releases, so the CLI has to match the library the gallery builds
+      # against.
+      - run: cargo install dioxus-showcase-cli --locked --version 0.1.0
       # Catches annotations that no longer parse, and stories that would collide
       # on a route id.
       - run: dioxus-showcase check
