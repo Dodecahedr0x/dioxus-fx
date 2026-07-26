@@ -1,0 +1,12 @@
+[package]
+name = "dioxus-micro-transitions-showcase"
+version = "0.0.7"
+edition = "2021"
+publish = false
+
+[workspace]
+
+[dependencies]
+dioxus = { version = "0.7", features = ["web", "router"] }
+dioxus-showcase = "0.0.7"
+showcase_entry = { package = "gallery", path = ".." }

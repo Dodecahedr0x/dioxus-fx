@@ -75,6 +75,18 @@ jobs:
             echo "::endgroup::"
           done
 
+  showcase:
+    name: showcase discovery
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo install dioxus-showcase-cli --locked
+      # Catches annotations that no longer parse, and stories that would collide
+      # on a route id.
+      - run: dioxus-showcase check
+
   wasm:
     name: wasm32 build
     runs-on: ubuntu-latest

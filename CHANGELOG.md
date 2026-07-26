@@ -6,6 +6,17 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- The gallery is now a
+  [dioxus-showcase](https://github.com/Dodecahedr0x/dioxus-showcase) app. Every
+  component is annotated with a `#[story]` in the `gallery` crate and the
+  browsable site is generated from those annotations — `dioxus-showcase dev`
+  replaces `dx serve --package gallery`. Story parameters become live controls,
+  so each component can be driven from its own props in the browser.
+- The published crate is unchanged: the annotations live in `example/`, so
+  `dioxus-micro-transitions` still depends on nothing but `dioxus`.
+
 ## [0.1.0]
 
 Initial release: a Dioxus port of

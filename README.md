@@ -63,11 +63,32 @@ dioxus-micro-transitions = { version = "0.1", default-features = false, features
 
 ## Gallery
 
+The gallery is a [dioxus-showcase](https://github.com/Dodecahedr0x/dioxus-showcase)
+app: every component is annotated with a `#[story]` in the `gallery` crate
+(`example/`), and the browsable site is generated from those annotations.
+
 ```sh
-dx serve --package gallery
+cargo install dioxus-showcase-cli --locked   # provides `dioxus-showcase`
+cargo install dioxus-cli --locked            # provides `dx`
+rustup target add wasm32-unknown-unknown
+
+dioxus-showcase check    # validate the annotations
+dioxus-showcase dev      # live gallery at http://127.0.0.1:6111
 ```
 
-Every component, live, on one page.
+For a static site, regenerate the app and bundle it:
+
+```sh
+dioxus-showcase build
+(cd example/showcase && dx bundle --platform web --release)   # → example/showcase/dist/public
+```
+
+Every component, live, with its props as controls: change a spinner's size,
+colour or duration and the preview follows. Leave a control untouched and the
+story renders the component's documented default.
+
+Adding a component means adding its story — `cargo test -p gallery` fails on any
+component that has none.
 
 ## Documentation
 
