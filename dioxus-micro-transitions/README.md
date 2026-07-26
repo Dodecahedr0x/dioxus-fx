@@ -16,6 +16,7 @@ interaction sets:
 | [`scroll`] | 3 scroll effects — progress bar, reveal, sticky reader |
 | [`buttons`] | 12 button interactions behind one component, plus a focus-blur link row |
 | [`cards`] | 9 hover-fanned card layouts and 3 carousels |
+| [`primitives`] | Enter/exit animations for headless component libraries |
 
 ## Design
 
@@ -88,7 +89,35 @@ and its CSS leaves the binary with it:
 dioxus-micro-transitions = { version = "0.1", default-features = false, features = ["loading"] }
 ```
 
-`loading`, `entrance`, `text`, `hover`, `cursor`, `scroll`, `buttons`, `cards`.
+`loading`, `entrance`, `text`, `hover`, `cursor`, `scroll`, `buttons`, `cards`,
+`primitives`.
+
+## With dioxus-primitives
+
+[`dioxus-primitives`](https://github.com/DioxusLabs/dioxus-components) — the
+crate behind <https://dioxuslabs.com/components> — ships unstyled components
+that describe their state with data attributes. The [`primitives`] module is a
+stylesheet keyed on those attributes, so animating one is adding a class:
+
+```rust, no_run
+# use dioxus::prelude::*;
+use dioxus_micro_transitions::primitives::*;
+
+fn App() -> Element {
+    rsx! {
+        PrimitivesStyle {}
+        // DialogRoot   { class: "dx-dialog-backdrop {AMT_FADE}", .. }
+        // DialogContent{ class: "dx-dialog {AMT_ZOOM}", .. }
+        // PopoverContent { class: "{AMT_SLIDE}", .. }   // follows data-side
+        // AccordionContent { class: "{AMT_COLLAPSE}", .. }
+    }
+}
+```
+
+Enter *and* exit: the primitives hold closing content in the DOM until its
+animation finishes. Nothing here depends on `dioxus-primitives` — the rules
+match `data-state`, `data-open`, `data-side` and `data-align` wherever they
+come from.
 
 ## Browser notes
 

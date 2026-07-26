@@ -29,6 +29,9 @@ pub(crate) const BASE_CSS: &str = r#"
 /// Dioxus deduplicates head styles by their `href`, so repeated renders of the
 /// same component — or many instances of it — only ever produce one `<style>`
 /// tag. Returns an `Element` meant to be embedded in a component's `rsx!`.
+// Every caller lives behind a feature, so with all of them off this is dead —
+// which is a configuration to compile cleanly, not to warn about.
+#[allow(unused_macros)]
 macro_rules! amt_style {
     ($key:literal, $css:expr) => {
         rsx! {
@@ -38,6 +41,7 @@ macro_rules! amt_style {
     };
 }
 
+#[allow(unused_imports)]
 pub(crate) use amt_style;
 
 /// Every stylesheet fragment this build contains, in a stable order.
@@ -45,6 +49,8 @@ pub(crate) use amt_style;
 /// Fragments already include [`BASE_CSS`], which is why [`stylesheet`]
 /// concatenates the base once and then only the category bodies.
 fn fragments() -> Vec<&'static str> {
+    // Nothing extends `parts` when every module feature is off.
+    #[allow(unused_mut)]
     let mut parts = vec![BASE_CSS];
     #[cfg(feature = "loading")]
     parts.extend_from_slice(crate::loading::CSS);
@@ -62,6 +68,8 @@ fn fragments() -> Vec<&'static str> {
     parts.extend_from_slice(crate::buttons::CSS);
     #[cfg(feature = "cards")]
     parts.extend_from_slice(crate::cards::CSS);
+    #[cfg(feature = "primitives")]
+    parts.extend_from_slice(crate::primitives::CSS);
     parts
 }
 
@@ -76,6 +84,8 @@ fn fragments() -> Vec<&'static str> {
 /// assert!(css.contains("@keyframes"));
 /// ```
 pub fn stylesheet() -> String {
+    // Only the `loading` feature appends to it.
+    #[allow(unused_mut)]
     let mut css = fragments().concat();
     // One component computes its keyframes rather than declaring them, so it
     // cannot contribute a `&'static str` fragment up front.

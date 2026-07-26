@@ -22,8 +22,9 @@ fn rust_files(dir: &Path) -> Vec<PathBuf> {
 }
 
 /// Components that render no visible markup, so a story would show an empty
-/// canvas. `StoryStage` mounts this one around every preview instead.
-const NOT_SHOWCASED: [&str; 1] = ["MicroTransitionsStyle"];
+/// canvas. Both mount stylesheets: `StoryStage` renders the first around every
+/// preview, and the `Primitives/…` stories render the second themselves.
+const NOT_SHOWCASED: [&str; 2] = ["MicroTransitionsStyle", "PrimitivesStyle"];
 
 /// Every `#[component] pub fn Name` exported by the library.
 fn library_components() -> Vec<String> {
@@ -50,8 +51,14 @@ fn showcased_components() -> Vec<String> {
         let source = fs::read_to_string(&file).expect("read story source");
         for block in source.split("#[story(title = \"").skip(1) {
             let title = block.split('"').next().expect("story title is terminated");
-            // Titles read `Category/Component` or `Category/Component/Variant`;
-            // the component is always the second segment.
+            // The `Primitives` category demonstrates the state-attribute
+            // stylesheet on components from `dioxus-primitives`, so its titles
+            // name those rather than anything this workspace defines.
+            if title.starts_with("Primitives/") {
+                continue;
+            }
+            // Every other title reads `Category/Component` or
+            // `Category/Component/Variant`; the component is the second segment.
             let component = title
                 .split('/')
                 .nth(1)

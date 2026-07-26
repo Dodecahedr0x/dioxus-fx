@@ -69,7 +69,7 @@ jobs:
       # Each module is a feature, so each must also stand on its own.
       - run: cargo check -p dioxus-micro-transitions --no-default-features
       - run: |
-          for feature in loading text entrance hover cursor scroll buttons cards; do
+          for feature in loading text entrance hover cursor scroll buttons cards primitives; do
             echo "::group::$feature"
             cargo check -p dioxus-micro-transitions --no-default-features --features "$feature"
             echo "::endgroup::"

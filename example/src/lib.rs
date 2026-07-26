@@ -20,6 +20,7 @@ pub mod cursor;
 pub mod entrance;
 pub mod hover;
 pub mod loading;
+pub mod primitives;
 pub mod scroll;
 pub mod stage;
 pub mod text;

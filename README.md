@@ -47,6 +47,40 @@ interaction sets.
 | `scroll` | 3 | Scroll progress bar, scroll reveal, sticky reader |
 | `buttons` | 12 + 1 | Button interactions behind one component, plus a focus-blur link row |
 | `cards` | 9 + 3 | Hover-fanned card layouts and three carousels |
+| `primitives` | 5 | Enter/exit animations for headless component libraries |
+
+## With dioxus-primitives
+
+[`dioxus-primitives`](https://github.com/DioxusLabs/dioxus-components) — the
+crate behind <https://dioxuslabs.com/components> — ships unstyled components
+that describe their state with data attributes: `data-state="open"`,
+`data-open="true"`, `data-side`, `data-align`. The `primitives` module is a
+stylesheet keyed on exactly those, so animating one is adding a class.
+
+```rust
+use dioxus::prelude::*;
+use dioxus_micro_transitions::primitives::*;
+use dioxus_primitives::dialog::{DialogContent, DialogRoot};
+
+fn Modal(open: bool) -> Element {
+    rsx! {
+        PrimitivesStyle {}
+        DialogRoot { open, class: "backdrop {AMT_FADE}",
+            DialogContent { class: "panel {AMT_ZOOM}", "Hello" }
+        }
+    }
+}
+```
+
+Enter *and* exit: the primitives hold closing content in the DOM until its
+animation finishes, so both halves play. Timing is per-element through
+`--amt-enter` and `--amt-exit`, the keyframes animate `translate`/`scale`
+rather than the `transform` shorthand so they compose with the library's own
+positioning, and `prefers-reduced-motion` shortens them to nothing rather than
+removing them.
+
+Nothing in this crate depends on `dioxus-primitives`; the rules match those
+attributes wherever they come from.
 
 ## Why it's small
 

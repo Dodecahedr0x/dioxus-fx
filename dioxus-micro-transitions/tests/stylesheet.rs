@@ -78,12 +78,21 @@ fn the_stylesheet_defines_every_class_the_components_use() {
 fn every_animation_referenced_has_keyframes() {
     let css = stylesheet();
     let mut missing = Vec::new();
-    for chunk in css.split("animation-name:").skip(1) {
+    // `animation-name:` names an animation outright; the `animation:` shorthand
+    // leads with the name in every rule this crate writes.
+    let referenced = css
+        .split("animation-name:")
+        .skip(1)
+        .chain(css.split("animation:").skip(1));
+    for chunk in referenced {
         let name: String = chunk
             .chars()
             .take_while(|c| c.is_alphanumeric() || *c == '-')
             .collect();
-        if !name.is_empty() && !css.contains(&format!("@keyframes {name}")) {
+        if !name.starts_with("amt-") {
+            continue;
+        }
+        if !css.contains(&format!("@keyframes {name}")) {
             missing.push(name);
         }
     }
@@ -106,6 +115,7 @@ fn the_stylesheet_covers_every_enabled_category() {
         ".amt-scroll-reveal",
         ".amt-abtn",
         ".amt-card-spread",
+        ".amt-state-fade",
     ] {
         assert!(css.contains(marker), "stylesheet is missing {marker}");
     }

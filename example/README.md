@@ -26,6 +26,7 @@ git apart from its `Cargo.toml`.
 | `assets/photos/` | Placeholder artwork for the carousel stories |
 | `src/loading.rs` | 134 loader stories |
 | `src/entrance.rs`, `src/text.rs`, … | One module per library module |
+| `src/primitives.rs` | The state-attribute add-on, on real `dioxus-primitives` components |
 | `tests/coverage.rs` | Fails if a library component has no story |
 
 ## Writing a story
@@ -68,6 +69,23 @@ To swap in real artwork, drop the files into `assets/photos/` and update those
 paths. `asset!` resolves at compile time, so a different extension means editing
 the path — a missing file is a compile error, not a broken image. Anything 3:4
 suits the carousel CSS.
+
+## The `Primitives` category
+
+Those stories drive components from
+[`dioxus-primitives`](https://github.com/DioxusLabs/dioxus-components) — the
+crate behind <https://dioxuslabs.com/components> — with nothing added but a
+class from `dioxus_micro_transitions::primitives`. Open the dialog or the
+popover to see both halves: the enter animation, and the exit one the primitives
+wait for before unmounting.
+
+Only a placeholder `0.0.0` of that crate is published, so this crate depends on
+the repository at a pinned revision. That dependency is the gallery's alone —
+the add-on is a stylesheet keyed on the data attributes those components emit,
+so the library itself stays at one dependency.
+
+Their titles read `Primitives/<Effect>` rather than naming a component in this
+workspace, which is why `tests/coverage.rs` skips that category.
 
 ## Navigation
 

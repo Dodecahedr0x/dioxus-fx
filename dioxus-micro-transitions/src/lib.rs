@@ -39,6 +39,10 @@ pub mod buttons;
 #[cfg_attr(docsrs, doc(cfg(feature = "cards")))]
 pub mod cards;
 
+#[cfg(feature = "primitives")]
+#[cfg_attr(docsrs, doc(cfg(feature = "primitives")))]
+pub mod primitives;
+
 /// Everything you normally want in scope.
 ///
 /// ```
@@ -59,6 +63,10 @@ pub mod prelude {
     pub use crate::hover::*;
     #[cfg(feature = "loading")]
     pub use crate::loading::*;
+    // The `AMT_`-prefixed class names, plus `PrimitivesStyle`. Exported as a
+    // module too, so `primitives::AMT_ZOOM` reads as well as the bare name.
+    #[cfg(feature = "primitives")]
+    pub use crate::primitives::{self, *};
     #[cfg(feature = "scroll")]
     pub use crate::scroll::*;
     #[cfg(feature = "text")]

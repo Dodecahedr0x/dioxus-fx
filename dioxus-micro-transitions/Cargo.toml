@@ -15,7 +15,17 @@ authors.workspace = true
 dioxus = { workspace = true }
 
 [features]
-default = ["loading", "text", "entrance", "hover", "cursor", "scroll", "buttons", "cards"]
+default = [
+    "loading",
+    "text",
+    "entrance",
+    "hover",
+    "cursor",
+    "scroll",
+    "buttons",
+    "cards",
+    "primitives",
+]
 loading = []
 text = []
 entrance = []
@@ -24,6 +34,7 @@ cursor = []
 scroll = []
 buttons = []
 cards = []
+primitives = []
 
 [package.metadata.docs.rs]
 all-features = true

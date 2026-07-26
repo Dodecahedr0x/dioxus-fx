@@ -6,6 +6,17 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- `primitives`: a stylesheet add-on for headless component libraries, behind a
+  cargo feature of the same name. `AMT_FADE`, `AMT_ZOOM`, `AMT_SLIDE`,
+  `AMT_MENU` and `AMT_COLLAPSE` animate anything that describes its state with
+  Radix-style `data-state`/`data-open` attributes — including every component in
+  [dioxus-primitives](https://github.com/DioxusLabs/dioxus-components), the
+  crate behind <https://dioxuslabs.com/components>. Exit animations included:
+  those components keep closing content mounted until its animation finishes.
+  The crate gains no dependency; the rules match the attributes, not the crate.
+
 ### Changed
 
 - The gallery is now a
