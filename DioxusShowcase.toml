@@ -1,5 +1,5 @@
 [project]
-name = "dioxus-micro-transitions"
+name = "dioxus-fx"
 entry_crate = "example"
 showcase_crate = "example/showcase"
 

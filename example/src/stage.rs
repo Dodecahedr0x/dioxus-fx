@@ -1,19 +1,19 @@
 //! The wrapper every story renders inside, plus the demo content they share.
 
 use dioxus::prelude::*;
-use dioxus_micro_transitions::prelude::*;
+use dioxus_fx::prelude::*;
 use dioxus_showcase::prelude::*;
 
 /// Centres each preview and mounts the full stylesheet once.
 ///
 /// Components inject the CSS they need on first use, so this is not required to
-/// make them work; mounting [`MicroTransitionsStyle`] up front just keeps the
-/// exported static site from flashing unstyled markup as stories mount.
+/// make them work; mounting [`FxStyle`] up front just keeps the exported
+/// static site from flashing unstyled markup as stories mount.
 #[provider(index = 0)]
 #[component]
 pub fn StoryStage(children: Element) -> Element {
     rsx! {
-        MicroTransitionsStyle {}
+        FxStyle {}
         div {
             style: "display:flex;align-items:center;justify-content:center;\
                     min-height:160px;width:100%;padding:24px;",

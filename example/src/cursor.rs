@@ -1,11 +1,11 @@
-//! Stories for `dioxus_micro_transitions::cursor`.
+//! Stories for `dioxus_fx::cursor`.
 //!
 //! `MouseFollow` and `CursorTrail` are page-wide effects: they track the
 //! pointer anywhere in the showcase window, not only over the preview.
 
 use crate::{num, txt};
 use dioxus::prelude::*;
-use dioxus_micro_transitions::cursor::*;
+use dioxus_fx::cursor::*;
 use dioxus_showcase::prelude::*;
 
 /// A panel lit by a soft glow that follows the pointer across it.

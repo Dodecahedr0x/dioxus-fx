@@ -1,6 +1,6 @@
 # gallery
 
-Showcase stories for every component in `dioxus-micro-transitions`.
+Showcase stories for every component in `dioxus-fx`.
 
 This crate is the entry crate for
 [dioxus-showcase](https://github.com/Dodecahedr0x/dioxus-showcase): it holds no
@@ -75,7 +75,7 @@ suits the carousel CSS.
 Those stories drive components from
 [`dioxus-primitives`](https://github.com/DioxusLabs/dioxus-components) — the
 crate behind <https://dioxuslabs.com/components> — with nothing added but a
-class from `dioxus_micro_transitions::primitives`. Open the dialog or the
+class from `dioxus_fx::primitives`. Open the dialog or the
 popover to see both halves: the enter animation, and the exit one the primitives
 wait for before unmounting.
 

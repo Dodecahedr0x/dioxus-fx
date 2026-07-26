@@ -1,5 +1,5 @@
 [package]
-name = "dioxus-micro-transitions-showcase"
+name = "dioxus-fx-showcase"
 version = "0.0.7"
 edition = "2021"
 publish = false

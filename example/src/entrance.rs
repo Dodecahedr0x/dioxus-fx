@@ -1,4 +1,4 @@
-//! Stories for `dioxus_micro_transitions::entrance`.
+//! Stories for `dioxus_fx::entrance`.
 //!
 //! Entrance animations run once, when the element mounts, so reload the story
 //! or switch away and back to watch one again.
@@ -6,7 +6,7 @@
 use crate::num;
 use crate::stage::Swatch;
 use dioxus::prelude::*;
-use dioxus_micro_transitions::entrance::*;
+use dioxus_fx::entrance::*;
 use dioxus_showcase::prelude::*;
 
 /// Fades its children in on mount.

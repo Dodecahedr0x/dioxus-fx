@@ -24,11 +24,11 @@ fn rust_files(dir: &Path) -> Vec<PathBuf> {
 /// Components that render no visible markup, so a story would show an empty
 /// canvas. Both mount stylesheets: `StoryStage` renders the first around every
 /// preview, and the `Primitives/…` stories render the second themselves.
-const NOT_SHOWCASED: [&str; 2] = ["MicroTransitionsStyle", "PrimitivesStyle"];
+const NOT_SHOWCASED: [&str; 2] = ["FxStyle", "PrimitivesStyle"];
 
 /// Every `#[component] pub fn Name` exported by the library.
 fn library_components() -> Vec<String> {
-    let src = Path::new(env!("CARGO_MANIFEST_DIR")).join("../dioxus-micro-transitions/src");
+    let src = Path::new(env!("CARGO_MANIFEST_DIR")).join("../dioxus-fx/src");
     let mut names = Vec::new();
     for file in rust_files(&src) {
         let source = fs::read_to_string(&file).expect("read library source");

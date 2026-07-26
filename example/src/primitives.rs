@@ -1,4 +1,4 @@
-//! Stories for `dioxus_micro_transitions::primitives`, the state-attribute
+//! Stories for `dioxus_fx::primitives`, the state-attribute
 //! add-on.
 //!
 //! These drive real [`dioxus_primitives`] components — the crate behind
@@ -8,7 +8,7 @@
 
 use crate::num;
 use dioxus::prelude::*;
-use dioxus_micro_transitions::primitives::*;
+use dioxus_fx::primitives::*;
 use dioxus_primitives::accordion::{Accordion, AccordionContent, AccordionItem, AccordionTrigger};
 use dioxus_primitives::dialog::{DialogContent, DialogRoot, DialogTitle};
 use dioxus_primitives::popover::{PopoverContent, PopoverRoot, PopoverTrigger};
@@ -27,7 +27,7 @@ const DEMO_CSS: &str = r#"
 .demo-anchor{position:relative;display:inline-block}
 .demo-accordion{width:280px;text-align:left}
 .demo-accordion button{width:100%;padding:10px 0;border:0;border-bottom:1px solid rgba(128,128,128,.3);background:none;color:inherit;font:inherit;text-align:left;cursor:pointer}
-/* The direct child of an AMT_COLLAPSE panel is what gets clipped, so its own
+/* The direct child of an DFX_COLLAPSE panel is what gets clipped, so its own
    padding would survive the collapse. Space the content inside it instead. */
 .demo-accordion p{margin:0;padding:10px 0}
 
@@ -38,7 +38,7 @@ const DEMO_CSS: &str = r#"
 fn Demo(children: Element) -> Element {
     rsx! {
         PrimitivesStyle {}
-        document::Style { href: "amt:primitives-demo", {DEMO_CSS} }
+        document::Style { href: "dfx:primitives-demo", {DEMO_CSS} }
         {children}
     }
 }
@@ -51,7 +51,7 @@ fn Demo(children: Element) -> Element {
 pub fn dialog(enter: f64, exit: f64) -> Element {
     let mut open = use_signal(|| false);
     let timing = format!(
-        "--amt-enter:{}s;--amt-exit:{}s;",
+        "--dfx-enter:{}s;--dfx-exit:{}s;",
         num(enter, 0.18),
         num(exit, 0.14)
     );
@@ -62,9 +62,9 @@ pub fn dialog(enter: f64, exit: f64) -> Element {
             DialogRoot {
                 open: open(),
                 on_open_change: move |v| open.set(v),
-                class: "demo-backdrop {AMT_FADE}",
+                class: "demo-backdrop {DFX_FADE}",
                 style: "{timing}",
-                DialogContent { class: "demo-panel {AMT_ZOOM}",
+                DialogContent { class: "demo-panel {DFX_ZOOM}",
                     DialogTitle { "Zoomed in" }
                     p { "The backdrop fades, the panel scales up behind it." }
                     button {
@@ -83,7 +83,7 @@ pub fn dialog(enter: f64, exit: f64) -> Element {
 pub fn popover(shift: f64, enter: f64) -> Element {
     let mut open = use_signal(|| false);
     let timing = format!(
-        "--amt-shift:{}px;--amt-enter:{}s;",
+        "--dfx-shift:{}px;--dfx-enter:{}s;",
         num(shift, 6.0),
         num(enter, 0.18)
     );
@@ -96,7 +96,7 @@ pub fn popover(shift: f64, enter: f64) -> Element {
                     PopoverContent {
                         side: ContentSide::Bottom,
                         align: ContentAlign::Center,
-                        class: "demo-panel demo-popover {AMT_SLIDE}",
+                        class: "demo-panel demo-popover {DFX_SLIDE}",
                         style: "{timing}",
                         "Slid down out of the trigger."
                     }
@@ -109,7 +109,7 @@ pub fn popover(shift: f64, enter: f64) -> Element {
 /// A tooltip on hover, sliding up from its trigger.
 #[story(title = "Primitives/Tooltip", tags = ["primitives"])]
 pub fn tooltip(shift: f64) -> Element {
-    let timing = format!("--amt-shift:{}px;", num(shift, 6.0));
+    let timing = format!("--dfx-shift:{}px;", num(shift, 6.0));
 
     rsx! {
         Demo {
@@ -118,7 +118,7 @@ pub fn tooltip(shift: f64) -> Element {
                     TooltipTrigger { class: "demo-trigger", "Hover me" }
                     TooltipContent {
                         side: ContentSide::Top,
-                        class: "demo-panel {AMT_SLIDE}",
+                        class: "demo-panel {DFX_SLIDE}",
                         style: "{timing}",
                         "Tooltips get the same class."
                     }
@@ -132,7 +132,7 @@ pub fn tooltip(shift: f64) -> Element {
 #[story(title = "Primitives/Menu", tags = ["primitives"])]
 pub fn menu(enter: f64) -> Element {
     let mut open = use_signal(|| false);
-    let timing = format!("--amt-enter:{}s;", num(enter, 0.18));
+    let timing = format!("--dfx-enter:{}s;", num(enter, 0.18));
 
     rsx! {
         Demo {
@@ -142,7 +142,7 @@ pub fn menu(enter: f64) -> Element {
                     PopoverContent {
                         side: ContentSide::Bottom,
                         align: ContentAlign::Start,
-                        class: "demo-panel demo-popover {AMT_MENU}",
+                        class: "demo-panel demo-popover {DFX_MENU}",
                         style: "{timing}",
                         div { "Rename" }
                         div { "Duplicate" }
@@ -157,7 +157,7 @@ pub fn menu(enter: f64) -> Element {
 /// Accordion panels collapsing to the height they actually measure.
 #[story(title = "Primitives/Accordion", tags = ["primitives"])]
 pub fn accordion(enter: f64) -> Element {
-    let timing = format!("--amt-enter:{}s;", num(enter, 0.22));
+    let timing = format!("--dfx-enter:{}s;", num(enter, 0.22));
 
     rsx! {
         Demo {
@@ -171,7 +171,7 @@ pub fn accordion(enter: f64) -> Element {
                 {
                     AccordionItem { key: "{i}", index: i, default_open: i == 0,
                         AccordionTrigger { "{title}" }
-                        AccordionContent { class: "{AMT_COLLAPSE}", style: "{timing}",
+                        AccordionContent { class: "{DFX_COLLAPSE}", style: "{timing}",
                             div {
                                 p { "{body}" }
                             }

@@ -1,0 +1,46 @@
+[package]
+name = "dioxus-fx"
+description = "163+ dependency-free visual effects and animated components for Dioxus: loaders, spinners, entrance animations, text reveals, hover and cursor effects, and effects that layer over live HTML. Plain CSS, no animation runtime."
+keywords = ["dioxus", "animation", "effects", "components", "ui"]
+categories = ["gui", "web-programming", "wasm"]
+readme = "README.md"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[dependencies]
+dioxus = { workspace = true }
+
+[features]
+default = [
+    "loading",
+    "text",
+    "entrance",
+    "hover",
+    "cursor",
+    "surface",
+    "scroll",
+    "buttons",
+    "cards",
+    "primitives",
+]
+loading = []
+text = []
+entrance = []
+hover = []
+cursor = []
+surface = []
+scroll = []
+buttons = []
+cards = []
+primitives = []
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
+
+[dev-dependencies]
+dioxus-ssr = "0.7"

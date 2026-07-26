@@ -1,4 +1,4 @@
-//! Stories for `dioxus_micro_transitions::scroll`.
+//! Stories for `dioxus_fx::scroll`.
 //!
 //! These respond to page scrolling, so scroll the showcase window rather than
 //! the preview to see them move.
@@ -6,7 +6,7 @@
 use crate::stage::Swatch;
 use crate::{num, txt};
 use dioxus::prelude::*;
-use dioxus_micro_transitions::scroll::*;
+use dioxus_fx::scroll::*;
 use dioxus_showcase::prelude::*;
 
 /// A bar pinned to the top of the viewport that fills as the page scrolls.

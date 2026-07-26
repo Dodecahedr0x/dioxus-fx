@@ -1,11 +1,11 @@
-//! Stories for `dioxus_micro_transitions::hover`.
+//! Stories for `dioxus_fx::hover`.
 //!
 //! These react to the pointer over their own element, so move the cursor
 //! across the preview.
 
 use crate::{num, txt};
 use dioxus::prelude::*;
-use dioxus_micro_transitions::hover::*;
+use dioxus_fx::hover::*;
 use dioxus_showcase::prelude::*;
 
 /// A button with a glow that tracks the pointer across its face.

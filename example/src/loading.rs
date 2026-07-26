@@ -1,11 +1,11 @@
-//! Stories for every loader in `dioxus_micro_transitions::loading`.
+//! Stories for every loader in `dioxus_fx::loading`.
 //!
 //! Each story exposes the loader's own props as showcase controls; leaving a
 //! control untouched renders the component's documented default.
 
 use crate::{num, txt};
 use dioxus::prelude::*;
-use dioxus_micro_transitions::loading::*;
+use dioxus_fx::loading::*;
 use dioxus_showcase::prelude::*;
 
 /// Four stacked bars that collapse and expand from the left in sequence.

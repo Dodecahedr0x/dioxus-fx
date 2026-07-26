@@ -1,6 +1,6 @@
 [package]
 name = "gallery"
-description = "Showcase stories for every dioxus-micro-transitions component."
+description = "Showcase stories for every dioxus-fx component."
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
@@ -9,7 +9,7 @@ publish = false
 
 [dependencies]
 dioxus = { version = "0.7", features = ["web"] }
-dioxus-micro-transitions = { workspace = true }
+dioxus-fx = { workspace = true }
 dioxus-showcase = "0.0.7"
 # The crate behind https://dioxuslabs.com/components. Only 0.0.0 — a placeholder
 # — is on crates.io, so the `primitives` stories build against the repository,

@@ -1,4 +1,4 @@
-//! Stories for `dioxus_micro_transitions::cards`.
+//! Stories for `dioxus_fx::cards`.
 //!
 //! `CardSpread` carries all nine layouts, so it gets one story per
 //! [`CardSpreadLayout`] variant. Hover a stack to fan it out; click a slide or
@@ -7,7 +7,7 @@
 use crate::stage::photos;
 use crate::{num, txt};
 use dioxus::prelude::*;
-use dioxus_micro_transitions::cards::*;
+use dioxus_fx::cards::*;
 use dioxus_showcase::prelude::*;
 
 /// Renders one spread layout with the gallery's card colour.

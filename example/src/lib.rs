@@ -1,4 +1,4 @@
-//! Showcase stories for every component in `dioxus-micro-transitions`.
+//! Showcase stories for every component in `dioxus-fx`.
 //!
 //! This crate is the entry crate for [`dioxus-showcase`](https://github.com/Dodecahedr0x/dioxus-showcase):
 //! every component in the library has a `#[story]` here, so the browsable
@@ -23,6 +23,7 @@ pub mod loading;
 pub mod primitives;
 pub mod scroll;
 pub mod stage;
+pub mod surface;
 pub mod text;
 
 /// Returns `fallback` while a numeric control still holds its zero seed.

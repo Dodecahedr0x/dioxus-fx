@@ -1,4 +1,4 @@
-//! Stories for `dioxus_micro_transitions::buttons`.
+//! Stories for `dioxus_fx::buttons`.
 //!
 //! `AnimatedButton` carries all twelve interactions, so it gets one story per
 //! [`ButtonInteraction`] variant. Press a button to swap it to its alternate
@@ -7,7 +7,7 @@
 use crate::stage::{Check, Chevron};
 use crate::txt;
 use dioxus::prelude::*;
-use dioxus_micro_transitions::buttons::*;
+use dioxus_fx::buttons::*;
 use dioxus_showcase::prelude::*;
 
 /// Renders one interaction with the icons and alternate state the gallery uses.

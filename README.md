@@ -1,23 +1,28 @@
-# dioxus-micro-transitions
+# dioxus-fx
 
-[![crates.io](https://img.shields.io/crates/v/dioxus-micro-transitions.svg)](https://crates.io/crates/dioxus-micro-transitions)
-[![docs.rs](https://img.shields.io/docsrs/dioxus-micro-transitions)](https://docs.rs/dioxus-micro-transitions)
-[![CI](https://github.com/dode/dioxus-micro-transitions/actions/workflows/ci.yml/badge.svg)](https://github.com/dode/dioxus-micro-transitions/actions/workflows/ci.yml)
-[![licence](https://img.shields.io/crates/l/dioxus-micro-transitions.svg)](#licence)
+[![crates.io](https://img.shields.io/crates/v/dioxus-fx.svg)](https://crates.io/crates/dioxus-fx)
+[![docs.rs](https://img.shields.io/docsrs/dioxus-fx)](https://docs.rs/dioxus-fx)
+[![CI](https://github.com/Dodecahedr0x/dioxus-fx/actions/workflows/ci.yml/badge.svg)](https://github.com/Dodecahedr0x/dioxus-fx/actions/workflows/ci.yml)
+[![licence](https://img.shields.io/crates/l/dioxus-fx.svg)](#licence)
 
-Micro-interactions and transition components for [Dioxus](https://dioxuslabs.com) —
-a port of [Amicro](https://github.com/Subhan-code/Amicro--Micro-transitions-),
-rebuilt without the JavaScript animation runtime.
+Visual effects and animated components for [Dioxus](https://dioxuslabs.com):
+loaders, entrances, text reveals, pointer effects, and effects that layer over
+markup you already have. All of it plain CSS — no animation runtime, no CSS
+framework, one dependency.
+
+The component set began as a port of
+[Amicro](https://github.com/Subhan-code/Amicro--Micro-transitions-), rebuilt
+without its JavaScript animation library.
 
 ```toml
 [dependencies]
 dioxus = "0.7"
-dioxus-micro-transitions = "0.1"
+dioxus-fx = "0.1"
 ```
 
 ```rust
 use dioxus::prelude::*;
-use dioxus_micro_transitions::prelude::*;
+use dioxus_fx::prelude::*;
 
 fn App() -> Element {
     rsx! {
@@ -35,7 +40,7 @@ Nothing to configure: each component injects the CSS it needs on first use.
 ## What's in it
 
 All 155 components from the Amicro registry, plus its button and card
-interaction sets.
+interaction sets, plus a set of effects that go over markup you already have.
 
 | Module | Count | What's in it |
 | --- | --- | --- |
@@ -44,10 +49,52 @@ interaction sets.
 | `text` | 4 | Staggered reveals by character, word or line |
 | `hover` | 4 | Glow button, magnetic button, tilt card, card grid |
 | `cursor` | 3 | Spotlight, cursor ring, cursor trail |
+| `surface` | 8 | Effects that layer over markup you already have |
 | `scroll` | 3 | Scroll progress bar, scroll reveal, sticky reader |
 | `buttons` | 12 + 1 | Button interactions behind one component, plus a focus-blur link row |
 | `cards` | 9 + 3 | Hover-fanned card layouts and three carousels |
 | `primitives` | 5 | Enter/exit animations for headless component libraries |
+
+## Effects over live HTML
+
+[Canvas UI](https://github.com/DavidHDev/canvas-ui) makes a good argument: the
+interesting place for a visual effect is *over* live HTML — text still
+selectable, links still clickable — not inside a canvas that has replaced it. It
+gets there with WebGL and the experimental html-in-canvas API. The `surface`
+module takes the same idea to where CSS already reaches it: `backdrop-filter`
+reads whatever is painted behind an element, `mask` and `mix-blend-mode` shape
+the result, and the content underneath never stops being ordinary DOM.
+
+```rust
+use dioxus::prelude::*;
+use dioxus_fx::surface::*;
+
+fn Paywalled(article: Element) -> Element {
+    rsx! {
+        // Frozen over, clear wherever the pointer goes. Still selectable.
+        Frost { melt: 160.0, {article} }
+    }
+}
+```
+
+| Component | What it does |
+| --- | --- |
+| `Frost` | A frozen pane that melts clear around the pointer |
+| `Lens` | A glass puck that follows the pointer and sharpens what is under it |
+| `Ripple` | Rings that spread from every click and bend the content they cross |
+| `Peel` | A corner that lifts on hover, showing a second layer |
+| `Vhs` | Worn tape: scanlines, chroma bleed, head noise, grain |
+| `Glitch` | Broadcast tearing bursts, idle in between |
+| `Blaze` | Embers and heat haze rising over the content |
+| `Halftone` | A retro dither screen — the one that never animates |
+
+Each wraps its children in one `pointer-events:none` layer, so dropping it
+around a section changes how that section looks and nothing else: no canvas, no
+shader, no duplicated markup, no new dependency. Each takes an `intensity`
+between `0` and `1`, because the version of an effect a real design can live
+with is usually the same effect turned most of the way down. Where
+`backdrop-filter` is unsupported they fall back to a plain translucent layer,
+which is dimmer but never blank.
 
 ## With dioxus-primitives
 
@@ -59,14 +106,14 @@ stylesheet keyed on exactly those, so animating one is adding a class.
 
 ```rust
 use dioxus::prelude::*;
-use dioxus_micro_transitions::primitives::*;
+use dioxus_fx::primitives::*;
 use dioxus_primitives::dialog::{DialogContent, DialogRoot};
 
 fn Modal(open: bool) -> Element {
     rsx! {
         PrimitivesStyle {}
-        DialogRoot { open, class: "backdrop {AMT_FADE}",
-            DialogContent { class: "panel {AMT_ZOOM}", "Hello" }
+        DialogRoot { open, class: "backdrop {DFX_FADE}",
+            DialogContent { class: "panel {DFX_ZOOM}", "Hello" }
         }
     }
 }
@@ -74,7 +121,7 @@ fn Modal(open: bool) -> Element {
 
 Enter *and* exit: the primitives hold closing content in the DOM until its
 animation finishes, so both halves play. Timing is per-element through
-`--amt-enter` and `--amt-exit`, the keyframes animate `translate`/`scale`
+`--dfx-enter` and `--dfx-exit`, the keyframes animate `translate`/`scale`
 rather than the `transform` shorthand so they compose with the library's own
 positioning, and `prefers-reduced-motion` shortens them to nothing rather than
 removing them.
@@ -92,7 +139,7 @@ attributes wherever they come from.
   use and their CSS goes with them.
 
 ```toml
-dioxus-micro-transitions = { version = "0.1", default-features = false, features = ["loading"] }
+dioxus-fx = { version = "0.1", default-features = false, features = ["loading"] }
 ```
 
 ## Gallery
@@ -128,7 +175,7 @@ component that has none.
 
 Full API docs, per-component notes, browser-support caveats and the list of
 deliberate differences from upstream are on
-[docs.rs](https://docs.rs/dioxus-micro-transitions).
+[docs.rs](https://docs.rs/dioxus-fx).
 
 ## Contributing
 
@@ -138,10 +185,10 @@ cargo clippy --workspace --all-targets --all-features
 cargo test --workspace --all-features
 ```
 
-Components live one-per-file under `dioxus-micro-transitions/src/loading/`; the
-smaller categories are single modules. A component owns its CSS as a
-`pub(crate) const CSS`, and the tests cross-check that every class the markup
-renders has a rule behind it.
+Components live one-per-file under `dioxus-fx/src/loading/`; the smaller
+categories are single modules. A component owns its CSS as a `pub(crate) const
+CSS`, and the tests cross-check that every class the markup renders has a rule
+behind it.
 
 ## Licence
 

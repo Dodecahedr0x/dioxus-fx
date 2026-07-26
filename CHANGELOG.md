@@ -8,9 +8,21 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- `surface`: eight effects that layer over markup you already have, behind a
+  cargo feature of the same name. `Frost`, `Lens`, `Ripple`, `Peel`, `Vhs`,
+  `Glitch`, `Blaze` and `Halftone` each wrap their children in one
+  `pointer-events:none` layer, so the content underneath stays selectable,
+  clickable and focusable while the effect runs over it. The idea is
+  [Canvas UI](https://github.com/DavidHDev/canvas-ui)'s — effects over live
+  HTML rather than a canvas that replaced it — reached with `backdrop-filter`,
+  `mask` and `mix-blend-mode` instead of WebGL and the experimental
+  html-in-canvas API, so there is still no runtime and still no dependency
+  beyond `dioxus`. Every one takes an `intensity` from `0` to `1` for dialling
+  it down into an existing design, and falls back to a plain translucent layer
+  where `backdrop-filter` is unsupported.
 - `primitives`: a stylesheet add-on for headless component libraries, behind a
-  cargo feature of the same name. `AMT_FADE`, `AMT_ZOOM`, `AMT_SLIDE`,
-  `AMT_MENU` and `AMT_COLLAPSE` animate anything that describes its state with
+  cargo feature of the same name. `DFX_FADE`, `DFX_ZOOM`, `DFX_SLIDE`,
+  `DFX_MENU` and `DFX_COLLAPSE` animate anything that describes its state with
   Radix-style `data-state`/`data-open` attributes — including every component in
   [dioxus-primitives](https://github.com/DioxusLabs/dioxus-components), the
   crate behind <https://dioxuslabs.com/components>. Exit animations included:
@@ -19,6 +31,13 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Renamed from `dioxus-micro-transitions` to `dioxus-fx`. "Micro-transitions"
+  described the original Amicro port; it does not describe 134 loaders, three
+  carousels, a headless-component stylesheet and a set of effects that layer
+  over live HTML. The CSS prefix moved with it — classes and custom properties
+  are `dfx-`/`--dfx-` rather than `amt-`/`--amt-`, the primitives constants are
+  `DFX_FADE` and friends, and `MicroTransitionsStyle` is now `FxStyle`. Nothing
+  was published under the old name, so there is no upgrade path to document.
 - The gallery is now a
   [dioxus-showcase](https://github.com/Dodecahedr0x/dioxus-showcase) app. Every
   component is annotated with a `#[story]` in the `gallery` crate and the
@@ -26,7 +45,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   replaces `dx serve --package gallery`. Story parameters become live controls,
   so each component can be driven from its own props in the browser.
 - The published crate is unchanged: the annotations live in `example/`, so
-  `dioxus-micro-transitions` still depends on nothing but `dioxus`.
+  `dioxus-fx` still depends on nothing but `dioxus`.
 
 ## [0.1.0]
 
@@ -43,8 +62,8 @@ Initial release: a Dioxus port of
 - `cards::CardSpread` with the 9 upstream fan layouts, and `cards::CardCarousel`,
   `cards::CardCoverFlow` and `cards::CardTimeMachine` with their `mono` variants.
 - Per-module cargo features, all enabled by default.
-- `stylesheet()` and `MicroTransitionsStyle` for shipping the CSS yourself
-  instead of letting components inject it.
+- `stylesheet()` and `FxStyle` for shipping the CSS yourself instead of
+  letting components inject it.
 
 ### Notes
 
@@ -56,5 +75,5 @@ Initial release: a Dioxus port of
   once at startup rather than per render; `AppleEqualizer` uses fixed rather than
   random bar delays.
 
-[Unreleased]: https://github.com/dode/dioxus-micro-transitions/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/dode/dioxus-micro-transitions/releases/tag/v0.1.0
+[Unreleased]: https://github.com/Dodecahedr0x/dioxus-fx/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/Dodecahedr0x/dioxus-fx/releases/tag/v0.1.0

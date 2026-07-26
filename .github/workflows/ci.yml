@@ -57,7 +57,7 @@ jobs:
       # Keep in step with `rust-version` in Cargo.toml.
       - uses: dtolnay/rust-toolchain@1.85.0
       - uses: Swatinem/rust-cache@v2
-      - run: cargo check -p dioxus-micro-transitions --all-features
+      - run: cargo check -p dioxus-fx --all-features
 
   features:
     name: feature combinations
@@ -67,11 +67,11 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
       # Each module is a feature, so each must also stand on its own.
-      - run: cargo check -p dioxus-micro-transitions --no-default-features
+      - run: cargo check -p dioxus-fx --no-default-features
       - run: |
           for feature in loading text entrance hover cursor scroll buttons cards primitives; do
             echo "::group::$feature"
-            cargo check -p dioxus-micro-transitions --no-default-features --features "$feature"
+            cargo check -p dioxus-fx --no-default-features --features "$feature"
             echo "::endgroup::"
           done
 
@@ -107,7 +107,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@nightly
       - uses: Swatinem/rust-cache@v2
-      - run: cargo doc -p dioxus-micro-transitions --all-features --no-deps
+      - run: cargo doc -p dioxus-fx --all-features --no-deps
 
   publish-dry-run:
     name: packaging
@@ -116,4 +116,4 @@ jobs:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
-      - run: cargo publish -p dioxus-micro-transitions --dry-run
+      - run: cargo publish -p dioxus-fx --dry-run

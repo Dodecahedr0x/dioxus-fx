@@ -807,6 +807,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "dioxus-fx"
+version = "0.1.0"
+dependencies = [
+ "dioxus",
+ "dioxus-ssr",
+]
+
+[[package]]
 name = "dioxus-history"
 version = "0.7.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -894,14 +902,6 @@ dependencies = [
  "tracing",
  "tracing-subscriber",
  "tracing-wasm",
-]
-
-[[package]]
-name = "dioxus-micro-transitions"
-version = "0.1.0"
-dependencies = [
- "dioxus",
- "dioxus-ssr",
 ]
 
 [[package]]
@@ -1300,7 +1300,7 @@ name = "gallery"
 version = "0.1.0"
 dependencies = [
  "dioxus",
- "dioxus-micro-transitions",
+ "dioxus-fx",
  "dioxus-primitives",
  "dioxus-showcase",
 ]

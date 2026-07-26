@@ -1,11 +1,11 @@
-//! Stories for `dioxus_micro_transitions::text`.
+//! Stories for `dioxus_fx::text`.
 //!
 //! Staggered reveals, split by character, word or line. Type into the `text`
 //! control to replay one with your own copy.
 
 use crate::{num, txt};
 use dioxus::prelude::*;
-use dioxus_micro_transitions::text::*;
+use dioxus_fx::text::*;
 use dioxus_showcase::prelude::*;
 
 /// Reveals text character by character out of a blur.
