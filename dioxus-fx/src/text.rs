@@ -80,8 +80,8 @@ const CHARACTER_STAGGER_CSS: &str = r#"
 
 /// Pops text in one character at a time, each overshooting slightly.
 ///
-/// The upstream component uses a spring; this port approximates it with the
-/// equivalent overshooting cubic-bezier.
+/// The overshoot is an overshooting cubic-bezier rather than a simulated
+/// spring, which reads the same at this duration and costs no frames.
 #[component]
 pub fn CharacterStagger(
     /// The text to reveal.

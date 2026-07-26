@@ -2,12 +2,8 @@
 
 Visual effects and animated components for [Dioxus](https://dioxuslabs.com):
 loaders, entrances, text reveals, pointer effects, and effects that layer over
-markup you already have.
-
-The component set began as a port of
-[Amicro](https://github.com/Subhan-code/Amicro--Micro-transitions-) — all 155 of
-its components, plus its button and card interaction sets — and the [`surface`]
-module adds effects that go over live HTML.
+markup you already have. 169 components, in ten modules, each behind its own
+cargo feature.
 
 | Module | What's in it |
 | --- | --- |
@@ -24,10 +20,9 @@ module adds effects that go over live HTML.
 
 ## Design
 
-**No animation runtime.** Upstream is built on Framer Motion. This crate has no
-JavaScript animation library, no CSS framework, and exactly one dependency —
-`dioxus` itself. Every animation is CSS keyframes or transitions, so it runs on
-the compositor rather than the main thread.
+**No animation runtime.** No JavaScript animation library, no CSS framework,
+and exactly one dependency — `dioxus` itself. Every animation is CSS keyframes
+or transitions, so it runs on the compositor rather than the main thread.
 
 **Nothing to set up.** Each component injects the small stylesheet it needs into
 `<head>` on first use, deduplicated by key. Use a component and it works. If you
@@ -167,24 +162,25 @@ does.
 - Several loaders use `color-mix()` for their track colour and fall back to a
   neutral grey without it.
 
-## Differences from upstream
+## Design notes
 
-- Spring physics become the closest cubic-bezier. Springs are simulated
-  per-frame in JavaScript; CSS has no equivalent, and an overshooting easing
-  curve reads the same at these durations.
-- Tailwind class props become real CSS colours, so the crate does not require
-  Tailwind. `bg-blue-500` becomes `#3b82f6`, and `bg-zinc-800 dark:bg-white`
-  becomes `currentColor`.
-- `AppleEqualizer` used `Math.random()` for its bar delays, which made every
-  render differ. This port uses a fixed uneven set.
-- `WavePhysicsLoader` computed 201 animation frames in JavaScript on every
-  render. This port runs the same physics once at startup and emits the result
-  as CSS keyframes.
-- `CardTimeMachine` uses `border-radius` in place of upstream's SVG squircle
-  filter.
-- Icons are yours to supply. [`buttons::AnimatedButton`] takes `icon` and
-  `alt_icon` as markup rather than depending on an icon set.
+- **Easing, not springs.** A spring has to be simulated per frame, and CSS has
+  no equivalent. Anything springy here is an overshooting cubic-bezier, which
+  reads the same at these durations and costs nothing to run.
+- **Colours are colours.** Every colour prop takes a CSS colour, not a utility
+  class, so nothing here needs Tailwind or any other framework.
+- **Deterministic by default.** Nothing randomises itself per render:
+  `AppleEqualizer` uses a fixed uneven set of delays, `WavePhysicsLoader` runs
+  its physics once at startup and emits the result as keyframes, and `Blaze`
+  scatters its sparks with fixed strides. A rebuild of the same page animates
+  the same way.
+- **Icons are yours to supply.** [`buttons::AnimatedButton`] takes `icon` and
+  `alt_icon` as markup, so the crate depends on no icon set.
 
 ## Licence
 
-MIT or Apache-2.0, at your option. Upstream Amicro is MIT-licensed.
+MIT or Apache-2.0, at your option.
+
+The loading, entrance, text, hover, cursor, scroll, button and card components
+began as a port of [Amicro](https://github.com/Subhan-code/Amicro--Micro-transitions-),
+which is MIT-licensed.

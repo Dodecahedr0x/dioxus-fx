@@ -75,7 +75,7 @@ loading_components! {
 }
 
 #[test]
-fn the_whole_upstream_loading_set_is_present() {
+fn the_whole_loading_set_is_present() {
     assert_eq!(LOADING_COUNT, 134);
 }
 

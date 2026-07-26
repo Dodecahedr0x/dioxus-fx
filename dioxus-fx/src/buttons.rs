@@ -1,8 +1,7 @@
-//! The Amicro button interaction set.
+//! Button hover interactions.
 //!
-//! Upstream this is one React component with an `interactionType` switch; the
-//! port keeps that shape. Pick a [`ButtonInteraction`], hand [`AnimatedButton`]
-//! your own icon markup, and the interaction runs on `:hover` and
+//! Twelve interactions behind one component. Pick a [`ButtonInteraction`], hand
+//! [`AnimatedButton`] your own icon markup, and it runs on `:hover` and
 //! `:focus-visible` in CSS — no state, no JavaScript.
 //! [`ButtonInteraction::Magnetic`] is the one exception: it needs the pointer
 //! position, so it uses `onmousemove`.
@@ -25,8 +24,8 @@
 //! }
 //! ```
 //!
-//! The upstream `focus-blur` entry is a link row rather than a button; it lives
-//! here as [`FocusBlurLinks`].
+//! [`FocusBlurLinks`] is the odd one out: a row of links rather than a button,
+//! where hovering one blurs the rest.
 
 use crate::style::dfx_style;
 use dioxus::prelude::*;
@@ -157,7 +156,7 @@ const ANIMATED_BUTTON_CSS: &str = r#"
 
 const SPARK_PATH: &str = "M12 2l2.4 7.6H22l-6.2 4.5 2.4 7.6-6.2-4.5-6.2 4.5 2.4-7.6L2 9.6h7.6z";
 
-/// A pill button with one of the Amicro hover interactions.
+/// A pill button with one of twelve hover interactions.
 ///
 /// You supply the icons — the crate has no icon-set dependency. Pass `icon` for
 /// the resting state and `alt_icon` for the state the interaction swaps to;
@@ -282,7 +281,7 @@ const FOCUS_BLUR_CSS: &str = r#"
 pub fn FocusBlurLinks(
     /// The links, as `(label, href)` pairs.
     items: Vec<(String, String)>,
-    /// Wrap the row in square brackets, as the upstream demo does.
+    /// Wrap the row in square brackets.
     #[props(default = true)]
     show_brackets: bool,
     /// Blur radius applied to the unfocused links, as a CSS length.

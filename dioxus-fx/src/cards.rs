@@ -1,12 +1,11 @@
-//! The Amicro card layouts: hover-fanned stacks and index-driven carousels.
+//! Card layouts: hover-fanned stacks and index-driven carousels.
 //!
 //! [`CardSpread`] covers the nine fan layouts. Every card's resting and fanned
 //! transform is computed in Rust and handed to CSS as custom properties, so the
 //! whole interaction is one `:hover` rule — no state and no JavaScript.
 //!
 //! [`CardCarousel`], [`CardCoverFlow`] and [`CardTimeMachine`] track an active
-//! index, so they hold a signal. Each has a `mono` flag matching the upstream
-//! `-mono` variants.
+//! index, so they hold a signal. Each has a `mono` flag that drops the colour.
 //!
 //! ```rust, no_run
 //! # use dioxus::prelude::*;
@@ -73,7 +72,6 @@ impl CardSpreadLayout {
 
     /// Transform for card `i` in the fanned-out state.
     ///
-    /// Ported from the upstream generator; the numbers are its defaults.
     fn placement(self, i: usize) -> Placement {
         let n = self.count();
         let center = (n / 2) as f64;
@@ -475,8 +473,8 @@ const CARD_TIME_MACHINE_CSS: &str = r#"
 /// A photo stack you scrub through with a timeline underneath.
 ///
 /// Photos already stepped past drop out of the frame, the way Time Machine
-/// pushes older windows away. The upstream demo runs the stack through an SVG
-/// squircle filter for its corner shape; this port uses `border-radius`.
+/// pushes older windows away. Corners are `border-radius` rather than a
+/// squircle, which would cost an SVG filter over the whole stack.
 #[component]
 pub fn CardTimeMachine(
     /// The photos, newest first. Give each a `date` to label the timeline.
@@ -543,7 +541,7 @@ pub fn CardTimeMachine(
                                 onmouseenter: move |_| active.set(i),
                                 onclick: move |_| active.set(i),
                             }
-                            // Two unlabelled ticks between each pair, as upstream.
+                            // Two unlabelled ticks between each labelled pair.
                             if i + 1 < count {
                                 span { class: "dfx-time-machine__tick", aria_hidden: "true" }
                                 span { class: "dfx-time-machine__tick", aria_hidden: "true" }

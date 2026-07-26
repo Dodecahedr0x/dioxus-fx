@@ -9,8 +9,8 @@ pub(crate) const CSS: &str = r#"
 
 /// Four audio-meter bars jumping at offset intervals.
 ///
-/// The upstream component randomises each bar's delay on every render; this
-/// port uses a fixed, uneven set so that renders stay deterministic.
+/// The delays are a fixed, uneven set rather than random ones, so a rebuild of
+/// the same page animates identically.
 #[component]
 pub fn AppleEqualizer(
     /// Height of the meter, in pixels.

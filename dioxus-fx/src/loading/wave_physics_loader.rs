@@ -109,12 +109,12 @@ pub(crate) fn keyframes() -> &'static str {
 
 /// A ball bouncing along a row of bars, deforming them as it passes.
 ///
-/// The upstream component computes 201 animation frames in JavaScript. This
-/// port runs the same physics once at startup and emits the result as CSS
-/// keyframes, so the animation is driven entirely by the compositor.
+/// The 201 frames of physics run once at startup and are emitted as CSS
+/// keyframes, rather than being recomputed per render, so the animation itself
+/// is driven entirely by the compositor.
 ///
-/// The geometry is fixed at the original 292×192 pixels; use `scale` to fit it
-/// into your layout.
+/// The geometry is fixed at 292×192 pixels; use `scale` to fit it into your
+/// layout.
 #[component]
 pub fn WavePhysicsLoader(
     /// Uniform scale applied to the whole loader. `1.0` is 292×192 pixels.

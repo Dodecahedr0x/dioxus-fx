@@ -54,8 +54,7 @@ const SCROLL_REVEAL_CSS: &str = r#"
 
 /// Reveals its children the first time they scroll into view.
 ///
-/// Like the upstream component this only fires once — scrolling back past it
-/// does not replay the animation.
+/// Fires once: scrolling back past it does not replay the animation.
 #[component]
 pub fn ScrollReveal(
     /// Length of the reveal, in seconds.

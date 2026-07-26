@@ -35,7 +35,7 @@ const FADE_IN_CSS: &str = r#"
 
 /// Fades its children in on mount.
 ///
-/// Port of Amicro's `fade-in`; eases on `easeOutCubic`.
+/// Eases on `easeOutCubic`.
 #[component]
 pub fn FadeIn(
     /// Length of the animation, in seconds.
@@ -68,7 +68,7 @@ const FADE_UP_CSS: &str = r#"
 
 /// Fades its children in while they rise into place.
 ///
-/// Port of Amicro's `fade-up`; eases on `easeOutExpo`.
+/// Eases on `easeOutExpo`.
 #[component]
 pub fn FadeUp(
     /// Length of the animation, in seconds.
@@ -104,7 +104,7 @@ const FADE_DOWN_CSS: &str = r#"
 
 /// Fades its children in while they descend into place.
 ///
-/// Port of Amicro's `fade-down`; eases on `easeOutExpo`.
+/// Eases on `easeOutExpo`.
 #[component]
 pub fn FadeDown(
     /// Length of the animation, in seconds.
@@ -140,7 +140,7 @@ const SLIDE_LEFT_CSS: &str = r#"
 
 /// Slides its children in from the right, settling leftward.
 ///
-/// Port of Amicro's `slide-left`; eases on `easeOutExpo`.
+/// Eases on `easeOutExpo`.
 #[component]
 pub fn SlideLeft(
     /// Length of the animation, in seconds.
@@ -176,7 +176,7 @@ const SLIDE_RIGHT_CSS: &str = r#"
 
 /// Slides its children in from the left, settling rightward.
 ///
-/// Port of Amicro's `slide-right`; eases on `easeOutExpo`.
+/// Eases on `easeOutExpo`.
 #[component]
 pub fn SlideRight(
     /// Length of the animation, in seconds.
@@ -212,8 +212,8 @@ const SCALE_IN_CSS: &str = r#"
 
 /// Pops its children in with a slight overshoot.
 ///
-/// Port of Amicro's `scale-in`; the springy `cubic-bezier(.34,1.56,.64,1)`
-/// curve overshoots past 1 before settling.
+/// The springy `cubic-bezier(.34,1.56,.64,1)` curve overshoots past 1 before
+/// settling.
 #[component]
 pub fn ScaleIn(
     /// Length of the animation, in seconds.
@@ -249,7 +249,7 @@ const ZOOM_IN_CSS: &str = r#"
 
 /// Zooms its children in while pulling them out of a blur.
 ///
-/// Port of Amicro's `zoom-in`; eases on `easeOutExpo`.
+/// Eases on `easeOutExpo`.
 #[component]
 pub fn ZoomIn(
     /// Length of the animation, in seconds.

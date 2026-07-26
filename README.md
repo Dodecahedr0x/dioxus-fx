@@ -10,10 +10,6 @@ loaders, entrances, text reveals, pointer effects, and effects that layer over
 markup you already have. All of it plain CSS — no animation runtime, no CSS
 framework, one dependency.
 
-The component set began as a port of
-[Amicro](https://github.com/Subhan-code/Amicro--Micro-transitions-), rebuilt
-without its JavaScript animation library.
-
 ```toml
 [dependencies]
 dioxus = "0.7"
@@ -39,8 +35,7 @@ Nothing to configure: each component injects the CSS it needs on first use.
 
 ## What's in it
 
-All 155 components from the Amicro registry, plus its button and card
-interaction sets, plus a set of effects that go over markup you already have.
+169 components, in ten modules, each behind its own cargo feature.
 
 | Module | Count | What's in it |
 | --- | --- | --- |
@@ -173,8 +168,7 @@ component that has none.
 
 ## Documentation
 
-Full API docs, per-component notes, browser-support caveats and the list of
-deliberate differences from upstream are on
+Full API docs, per-component notes and browser-support caveats are on
 [docs.rs](https://docs.rs/dioxus-fx).
 
 ## Contributing
@@ -192,4 +186,8 @@ behind it.
 
 ## Licence
 
-MIT or Apache-2.0, at your option. Upstream Amicro is MIT-licensed.
+MIT or Apache-2.0, at your option.
+
+The loading, entrance, text, hover, cursor, scroll, button and card components
+began as a port of [Amicro](https://github.com/Subhan-code/Amicro--Micro-transitions-),
+which is MIT-licensed.

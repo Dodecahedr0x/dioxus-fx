@@ -32,7 +32,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 
 - Renamed from `dioxus-micro-transitions` to `dioxus-fx`. "Micro-transitions"
-  described the original Amicro port; it does not describe 134 loaders, three
+  described the original component set; it does not describe 134 loaders, three
   carousels, a headless-component stylesheet and a set of effects that layer
   over live HTML. The CSS prefix moved with it — classes and custom properties
   are `dfx-`/`--dfx-` rather than `amt-`/`--amt-`, the primitives constants are
@@ -49,17 +49,15 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [0.1.0]
 
-Initial release: a Dioxus port of
-[Amicro](https://github.com/Subhan-code/Amicro--Micro-transitions-).
+Initial release.
 
 ### Added
 
-- All 155 components from the Amicro registry — 134 loading indicators, 7
-  entrance animations, 4 text reveals, 4 hover effects, 3 cursor followers and 3
-  scroll effects.
-- `buttons::AnimatedButton`, covering the 12 upstream button interactions, plus
+- 155 components — 134 loading indicators, 7 entrance animations, 4 text
+  reveals, 4 hover effects, 3 cursor followers and 3 scroll effects.
+- `buttons::AnimatedButton`, covering 12 button interactions, plus
   `buttons::FocusBlurLinks`.
-- `cards::CardSpread` with the 9 upstream fan layouts, and `cards::CardCarousel`,
+- `cards::CardSpread` with 9 fan layouts, and `cards::CardCarousel`,
   `cards::CardCoverFlow` and `cards::CardTimeMachine` with their `mono` variants.
 - Per-module cargo features, all enabled by default.
 - `stylesheet()` and `FxStyle` for shipping the CSS yourself instead of
