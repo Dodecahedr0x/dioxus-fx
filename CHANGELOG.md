@@ -8,9 +8,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- `surface`: eight effects that layer over markup you already have, behind a
+- `surface`: twenty-four effects that layer over markup you already have, behind a
   cargo feature of the same name. `Frost`, `Lens`, `Ripple`, `Peel`, `Vhs`,
-  `Glitch`, `Blaze` and `Halftone` each wrap their children in one
+  `Glitch`, `Blaze`, `Halftone`, `Bubble`, `Mist`, `Droplets`, `Tiles`,
+  `Honeycomb`, `Laser`, `Shatter`, `Stipple`, `Liquid`, `Dissolve`, `Bend`,
+  `Ascii` and `Cloth` each wrap their children in one
   `pointer-events:none` layer, so the content underneath stays selectable,
   clickable and focusable while the effect runs over it. The idea is
   [Canvas UI](https://github.com/DavidHDev/canvas-ui)'s — effects over live
@@ -20,6 +22,35 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   beyond `dioxus`. Every one takes an `intensity` from `0` to `1` for dialling
   it down into an existing design, and falls back to a plain translucent layer
   where `backdrop-filter` is unsupported.
+
+  Three more — `GlassShape`, `DitherShape` and `ParticleShape` — are objects
+  rather than wrappers: each takes a `src`, an SVG or an image whose alpha is the
+  shape, and fills that outline with the page behind it. That is the same split
+  Canvas UI draws between its components and its `… Object` ones, minus the GLB
+  and glTF inputs, since a CSS mask has no geometry to light.
+
+  Together that covers all twenty-five of Canvas UI's components — in spirit,
+  not in method. Where a mechanism differs the component documents it: `Lens`
+  resolves where `Magnify` enlarges, `Bubble` overlaps where Canvas UI's merges
+  as metaballs, `Shatter` stays in plane rather than lifting each shard into 3D,
+  and `Bend` folds a section where Canvas UI's folds a scanline.
+
+  `Ascii` and `Cloth` stretch furthest. Real ASCII art picks the character
+  matching each cell's brightness, which needs the rendered pixels read back —
+  so `Ascii` punches a fixed glyph field out of a sheet and lets the page show
+  through the holes, nearer to `Halftone`'s dot grid than to a converter. `Cloth`
+  solves no mesh: the fabric is shading, the wind is a keyframe, and the pointer
+  lights the cloth rather than pushing it.
+
+  `Laser` is the one effect here that hides part of its children while it runs,
+  since the reveal is the point. It therefore carries its own
+  `prefers-reduced-motion` rule that drops the mask rather than the crate-wide
+  one that stops animations dead, which would otherwise strand the content
+  mid-scan with half of it cut away. `Dissolve` and `Bend` face the same trap
+  from the other side — both are driven by `animation-timeline: view()`, so
+  whatever they render with no scroll-driven-animation support is what those
+  users get permanently. Both therefore rest at the readable end: content whole,
+  block flat.
 - `primitives`: a stylesheet add-on for headless component libraries, behind a
   cargo feature of the same name. `DFX_FADE`, `DFX_ZOOM`, `DFX_SLIDE`,
   `DFX_MENU` and `DFX_COLLAPSE` animate anything that describes its state with

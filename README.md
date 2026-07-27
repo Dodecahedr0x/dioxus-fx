@@ -36,7 +36,7 @@ Nothing to configure: each component injects the CSS it needs on first use.
 
 ## What's in it
 
-169 components, in ten modules, each behind its own cargo feature.
+185 components, in ten modules, each behind its own cargo feature.
 
 | Module | Count | What's in it |
 | --- | --- | --- |
@@ -45,7 +45,7 @@ Nothing to configure: each component injects the CSS it needs on first use.
 | `text` | 4 | Staggered reveals by character, word or line |
 | `hover` | 4 | Glow button, magnetic button, tilt card, card grid |
 | `cursor` | 3 | Spotlight, cursor ring, cursor trail |
-| `surface` | 8 | Effects that layer over markup you already have |
+| `surface` | 24 | Effects that layer over markup you already have |
 | `scroll` | 3 | Scroll progress bar, scroll reveal, sticky reader |
 | `buttons` | 12 + 1 | Button interactions behind one component, plus a focus-blur link row |
 | `cards` | 9 + 3 | Hover-fanned card layouts and three carousels |
@@ -73,16 +73,29 @@ fn Paywalled(article: Element) -> Element {
 }
 ```
 
-| Component | What it does |
-| --- | --- |
-| `Frost` | A frozen pane that melts clear around the pointer |
-| `Lens` | A glass puck that follows the pointer and sharpens what is under it |
-| `Ripple` | Rings that spread from every click and bend the content they cross |
-| `Peel` | A corner that lifts on hover, showing a second layer |
-| `Vhs` | Worn tape: scanlines, chroma bleed, head noise, grain |
-| `Glitch` | Broadcast tearing bursts, idle in between |
-| `Blaze` | Embers and heat haze rising over the content |
-| `Halftone` | A retro dither screen — the one that never animates |
+| Component | What it does | After Canvas UI's |
+| --- | --- | --- |
+| `Frost` | A frozen pane that melts clear around the pointer | `Frost` |
+| `Lens` | A glass puck that follows the pointer and sharpens what is under it | `Glass`, `Magnify` |
+| `Ripple` | Rings that spread from every click and bend the content they cross | `Ripple` |
+| `Peel` | A corner that lifts on hover, showing a second layer | `Peel` |
+| `Vhs` | Worn tape: scanlines, chroma bleed, head noise, grain | `VHS` |
+| `Glitch` | Broadcast tearing bursts, idle in between | `Glitch` |
+| `Blaze` | Embers and heat haze rising over the content | `Blaze` |
+| `Halftone` | A retro dither screen — the one that never animates | `Retro Dither` |
+| `Bubble` | Soap bubbles trailing the pointer, refracting the page | `Bubble` |
+| `Mist` | Drifting banks of mist, parted by the pointer | `Clouds` |
+| `Droplets` | Rain running down, refracting whatever it crosses | `Droplets` |
+| `Tiles` | Lit tiles rippling in a diagonal wave around the pointer | `Grid` |
+| `Honeycomb` | Floating hex tiles that shine under the pointer | `Hex Float` |
+| `Laser` | A beam that scans down, revealing the content behind it | `Laser` |
+| `Shatter` | Glass that breaks wherever the content is clicked | `Shatter` |
+| `Stipple` | Fine grain that resolves back into crisp UI at the pointer | `Particle Reveal` |
+| `Liquid` | A wash of fluid the pointer drags through the content | `Liquid` |
+| `Dissolve` | Content below a line dissolved into grains, reassembled on scroll | `Particle Scroll` |
+| `Bend` | A block that folds away over a virtual edge as the page scrolls | `Bend` |
+| `Ascii` | A lens leaving the page visible only through glyph-shaped holes | `Asciify` |
+| `Cloth` | Content hung on fabric that breathes, swelling under the pointer | `Cloth` |
 
 Each wraps its children in one `pointer-events:none` layer, so dropping it
 around a section changes how that section looks and nothing else: no canvas, no
@@ -91,6 +104,33 @@ between `0` and `1`, because the version of an effect a real design can live
 with is usually the same effect turned most of the way down. Where
 `backdrop-filter` is unsupported they fall back to a plain translucent layer,
 which is dimmer but never blank.
+
+Three more are objects rather than wrappers. They take a `src` — an SVG or an
+image whose alpha is the shape — and fill that outline with the page behind it,
+which is the same split Canvas UI draws between its components and its
+`… Object` ones.
+
+| Component | What it does | After Canvas UI's |
+| --- | --- | --- |
+| `GlassShape` | A silhouette turned into floating glass | `Glass Object` |
+| `DitherShape` | A silhouette screened through a one-bit dither | `Dithered Object` |
+| `ParticleShape` | A silhouette rebuilt as particles that scatter on hover | `Particle Object` |
+
+That is all 25 of Canvas UI's components — in spirit, not in method. WebGL can
+do things CSS cannot, and where the mechanism differs the component says so:
+`Lens` resolves where `Magnify` enlarges, `Bubble` overlaps where Canvas UI's
+merges as metaballs, `Shatter` stays in plane rather than lifting each shard
+into 3D, `Bend` folds a section where `Bend` folds a scanline, and the three
+shape components take the flat inputs only — an SVG, a PNG, an icon — where
+Canvas UI's also accept a GLB model.
+
+The last two are the biggest stretch and are labelled as such. Real ASCII art
+picks the character matching each cell's brightness, which means reading the
+rendered pixels back; `Ascii` instead punches a fixed glyph field out of a sheet
+and lets the page show through the holes, which is closer to `Halftone`'s fixed
+dot grid than to a converter. `Cloth` simulates nothing: the fabric is shading,
+the wind is one long keyframe, and the pointer lights the cloth rather than
+pushing it. Both borrow the read, not the physics.
 
 ## With dioxus-primitives
 

@@ -57,6 +57,22 @@ fn the_stylesheet_defines_every_class_the_components_use() {
             Glitch { "x" }
             Blaze { "x" }
             Halftone { "x" }
+            Bubble { "x" }
+            Mist { "x" }
+            Droplets { "x" }
+            Tiles { "x" }
+            Honeycomb { "x" }
+            Laser { "x" }
+            Shatter { "x" }
+            Stipple { "x" }
+            Liquid { "x" }
+            Dissolve { "x" }
+            Bend { "x" }
+            GlassShape {}
+            DitherShape {}
+            ParticleShape {}
+            Ascii { "x" }
+            Cloth { "x" }
             AnimatedButton { label: "x" }
             FocusBlurLinks { items: vec![("x".to_string(), "#".to_string())] }
             CardSpread {}

@@ -139,12 +139,133 @@ fn surface_components_render() {
     assert_renders!("Glitch", rsx! { Glitch { "x" } });
     assert_renders!("Blaze", rsx! { Blaze { "x" } });
     assert_renders!("Halftone", rsx! { Halftone { "x" } });
+    assert_renders!("Bubble", rsx! { Bubble { "x" } });
+    assert_renders!("Mist", rsx! { Mist { "x" } });
+    assert_renders!("Droplets", rsx! { Droplets { "x" } });
+    assert_renders!("Tiles", rsx! { Tiles { "x" } });
+    assert_renders!("Honeycomb", rsx! { Honeycomb { "x" } });
+    assert_renders!("Laser", rsx! { Laser { "x" } });
+    assert_renders!("Shatter", rsx! { Shatter { "x" } });
+    assert_renders!("Stipple", rsx! { Stipple { "x" } });
+    assert_renders!("Liquid", rsx! { Liquid { "x" } });
+    assert_renders!("Dissolve", rsx! { Dissolve { "x" } });
+    assert_renders!("Bend", rsx! { Bend { "x" } });
+    assert_renders!("GlassShape", rsx! { GlassShape {} });
+    assert_renders!("DitherShape", rsx! { DitherShape {} });
+    assert_renders!("ParticleShape", rsx! { ParticleShape {} });
+    assert_renders!("Ascii", rsx! { Ascii { "x" } });
+    assert_renders!("Cloth", rsx! { Cloth { "x" } });
     assert_renders!(
         "Peel",
         rsx! {
             Peel { beneath: rsx! { "under" }, "over" }
         }
     );
+}
+
+#[test]
+fn the_tile_grids_emit_every_cell_they_are_asked_for() {
+    fn app() -> Element {
+        rsx! {
+            Tiles { columns: 4, rows: 3, "x" }
+        }
+    }
+    assert_eq!(render(app).matches("dfx-tiles__tile").count(), 12);
+}
+
+#[test]
+fn the_honeycomb_overhangs_its_lattice_by_one_column() {
+    // The half-cell shift on odd rows would leave a notch down one side, so
+    // every row renders one cell past the edge for the clip to swallow.
+    fn app() -> Element {
+        rsx! {
+            Honeycomb { columns: 5, rows: 4, "x" }
+        }
+    }
+    assert_eq!(render(app).matches("dfx-honeycomb__cell").count(), 4 * 6);
+}
+
+#[test]
+fn shatter_starts_centred_and_moves_to_where_it_was_struck() {
+    fn app() -> Element {
+        rsx! {
+            Shatter { "x" }
+        }
+    }
+    let html = render(app);
+    // A percentage, because until a click there is no measured impact point —
+    // and no flash, whose `translate` could not resolve one.
+    assert!(html.contains("--dfx-x:50%;--dfx-y:50%;"), "{html}");
+    assert!(!html.contains("dfx-shatter__flash"), "{html}");
+}
+
+#[test]
+fn the_shape_components_quote_their_silhouette_safely() {
+    // `src` lands in a CSS `url('…')` inside an HTML style attribute, so the
+    // built-in silhouette has to survive both parsers: percent-encoded down to
+    // characters that are neither a quote, a space nor a parenthesis.
+    fn app() -> Element {
+        rsx! {
+            GlassShape {}
+            DitherShape {}
+            ParticleShape {}
+        }
+    }
+    // The renderer escapes the CSS quotes to `&#39;` on the way into the
+    // attribute; the browser puts them back before the CSS parser sees them.
+    const OPEN: &str = "--dfx-shape:url(&#39;";
+    let html = render(app);
+    for chunk in html.split(OPEN).skip(1) {
+        let src = chunk.split("&#39;").next().expect("the url is closed");
+        assert!(
+            !src.contains([' ', '"', '\'', '(', ')']),
+            "silhouette would break out of url('…'): {src}"
+        );
+    }
+    assert_eq!(html.matches(OPEN).count(), 3, "{html}");
+}
+
+#[test]
+fn the_scroll_driven_effects_rest_where_their_content_is_readable() {
+    // Both are guarded behind `@supports (animation-timeline:view())`, so a
+    // browser without scroll-driven animations never starts them. Whatever they
+    // render in that case is what those users get permanently, which rules out
+    // any resting state that hides the content.
+    let css = stylesheet();
+    for guarded in [
+        ".dfx-dissolve{animation:",
+        ".dfx-bend .dfx-surface__content{",
+    ] {
+        let before = css.split(guarded).next().expect("the rule is present");
+        assert!(
+            before.ends_with("@supports (animation-timeline:view()){\n"),
+            "{guarded} is not behind a scroll-timeline @supports guard"
+        );
+    }
+    // Dissolve's grain rests at zero — solid content — rather than at one.
+    assert!(
+        css.contains("@property --dfx-grain{syntax:\"<number>\";inherits:true;initial-value:0}"),
+        "Dissolve would rest dissolved"
+    );
+}
+
+#[test]
+fn laser_leaves_its_children_visible_once_the_scan_has_passed() {
+    // Every other effect here is additive, so `prefers-reduced-motion` can stop
+    // it dead. This one masks its children away ahead of the beam, and a
+    // stopped animation would leave them masked away for good.
+    let css = stylesheet();
+    let reduced = css
+        .split("@media (prefers-reduced-motion:reduce)")
+        .skip(1)
+        // The block that opens on the Laser's own rules, not the base block
+        // further up whose tail happens to run past them.
+        .find(|block| block.trim_start().starts_with("{\n.dfx-laser"))
+        .expect("Laser declares its own reduced-motion behaviour");
+    // Only the media query's own closing brace starts a line; every rule inside
+    // it closes at the end of one.
+    let block = reduced.split_once("\n}").expect("the block is closed").0;
+    assert!(block.contains("mask-image:none"), "{block}");
 }
 
 #[test]

@@ -220,3 +220,368 @@ pub fn halftone_colour(#[default = 4.0] cell: f64, #[default = 1.0] intensity: f
         }
     }
 }
+
+/// A string of soap bubbles trailing the pointer, refracting the page.
+#[story(title = "Surface/Bubble", tags = ["surface"])]
+pub fn bubble(
+    #[default = 68.0] size: f64,
+    #[default = 5] count: usize,
+    #[default = 1.0] intensity: f64,
+) -> Element {
+    rsx! {
+        Bubble {
+            class: "story-card",
+            size,
+            count,
+            intensity,
+            Panel {}
+        }
+    }
+}
+
+/// Drifting mist that the pointer parts.
+#[story(title = "Surface/Mist", tags = ["surface"])]
+pub fn mist(
+    #[default = 7.0] blur: f64,
+    #[default = 190.0] part: f64,
+    #[default = 24.0] duration: f64,
+    #[default = 1.0] intensity: f64,
+) -> Element {
+    rsx! {
+        Mist {
+            class: "story-card",
+            blur,
+            part,
+            duration,
+            intensity,
+            Panel {}
+        }
+    }
+}
+
+/// Rain running down the content and refracting whatever it crosses.
+#[story(title = "Surface/Droplets", tags = ["surface"])]
+pub fn droplets(
+    #[default = 16] count: usize,
+    #[default = 13.0] size: f64,
+    #[default = 2.6] duration: f64,
+    #[default = 1.0] intensity: f64,
+) -> Element {
+    rsx! {
+        Droplets {
+            class: "story-card",
+            count,
+            size,
+            duration,
+            intensity,
+            Panel {}
+        }
+    }
+}
+
+/// Lit tiles that ripple in a diagonal wave around the pointer.
+#[story(title = "Surface/Tiles", tags = ["surface"])]
+pub fn tiles(
+    #[default = 9] columns: usize,
+    #[default = 6] rows: usize,
+    #[default = 210.0] reach: f64,
+    #[default = 2.4] duration: f64,
+    #[default = 1.0] intensity: f64,
+) -> Element {
+    rsx! {
+        Tiles {
+            class: "story-card",
+            columns,
+            rows,
+            reach,
+            duration,
+            intensity,
+            Panel {}
+        }
+    }
+}
+
+/// Floating hex tiles that shine where the pointer goes.
+#[story(title = "Surface/Honeycomb", tags = ["surface"])]
+pub fn honeycomb(
+    #[default = 7] columns: usize,
+    #[default = 5] rows: usize,
+    #[default = 5.0] lift: f64,
+    #[default = 180.0] glow: f64,
+    #[default = 1.0] intensity: f64,
+) -> Element {
+    rsx! {
+        Honeycomb {
+            class: "story-card",
+            columns,
+            rows,
+            lift,
+            glow,
+            intensity,
+            Panel {}
+        }
+    }
+}
+
+/// A beam that scans down and reveals the content behind it. Change a control
+/// to replay it.
+#[story(title = "Surface/Laser", tags = ["surface"])]
+pub fn laser(
+    #[default = "#f43f5e"] color: String,
+    #[default = 1.8] duration: f64,
+    #[default = 2.0] thickness: f64,
+    #[default = 1.0] intensity: f64,
+) -> Element {
+    rsx! {
+        Laser {
+            class: "story-card",
+            color,
+            duration,
+            thickness,
+            intensity,
+            Panel {}
+        }
+    }
+}
+
+/// The same scan on a loop, wiping and redrawing the content each pass.
+#[story(title = "Surface/Laser/Repeat", tags = ["surface"])]
+pub fn laser_repeat(
+    #[default = "#22d3ee"] color: String,
+    #[default = 3.0] duration: f64,
+    #[default = 1.0] intensity: f64,
+) -> Element {
+    rsx! {
+        Laser {
+            class: "story-card",
+            color,
+            duration,
+            repeat: true,
+            intensity,
+            Panel {}
+        }
+    }
+}
+
+/// Glass that breaks wherever the content is clicked. Click the card.
+#[story(title = "Surface/Shatter", tags = ["surface"])]
+pub fn shatter(
+    #[default = 18] shards: usize,
+    #[default = 74.0] rings: f64,
+    #[default = 0.55] duration: f64,
+    #[default = "rgba(255,255,255,.62)"] color: String,
+    #[default = 1.0] intensity: f64,
+) -> Element {
+    rsx! {
+        Shatter {
+            class: "story-card",
+            shards,
+            rings,
+            duration,
+            color,
+            intensity,
+            Panel {}
+        }
+    }
+}
+
+/// Fine grain that resolves back into crisp UI around the pointer.
+#[story(title = "Surface/Stipple", tags = ["surface"])]
+pub fn stipple(
+    #[default = 5.0] cell: f64,
+    #[default = 2.2] blur: f64,
+    #[default = 150.0] focus: f64,
+    #[default = 1.0] intensity: f64,
+) -> Element {
+    rsx! {
+        Stipple {
+            class: "story-card",
+            cell,
+            blur,
+            focus,
+            intensity,
+            Panel {}
+        }
+    }
+}
+
+/// A wash of fluid the pointer drags through the content.
+#[story(title = "Surface/Liquid", tags = ["surface"])]
+pub fn liquid(
+    #[default = 240.0] size: f64,
+    #[default = 6] count: usize,
+    #[default = 9.0] swirl: f64,
+    #[default = 90.0] hue: f64,
+    #[default = 1.0] intensity: f64,
+) -> Element {
+    rsx! {
+        Liquid {
+            class: "story-card",
+            size,
+            count,
+            swirl,
+            hue,
+            intensity,
+            Panel {}
+        }
+    }
+}
+
+/// Content below a line dissolved into grains that reassemble on scroll. Scroll
+/// the preview to settle it.
+#[story(title = "Surface/Dissolve", tags = ["surface"])]
+pub fn dissolve(
+    #[default = 45.0] line: f64,
+    #[default = 4.0] cell: f64,
+    #[default = 1.6] blur: f64,
+    #[default = 1.0] intensity: f64,
+) -> Element {
+    rsx! {
+        Dissolve {
+            class: "story-card",
+            line,
+            cell,
+            blur,
+            intensity,
+            Panel {}
+        }
+    }
+}
+
+/// A block that folds away over a virtual edge as the page scrolls past it.
+#[story(title = "Surface/Bend", tags = ["surface"])]
+pub fn bend(
+    #[default = 34.0] angle: f64,
+    #[default = 700.0] perspective: f64,
+    #[default = 22.0] zone: f64,
+    #[default = 1.0] intensity: f64,
+) -> Element {
+    rsx! {
+        Bend {
+            class: "story-card",
+            angle,
+            perspective,
+            zone,
+            intensity,
+            Panel {}
+        }
+    }
+}
+
+/// The backdrop the shape stories refract, since they fill their outline with
+/// whatever is behind them rather than with content of their own.
+#[component]
+pub fn Backdrop(children: Element) -> Element {
+    rsx! {
+        div {
+            style: "width:340px;height:240px;display:flex;align-items:center;\
+                    justify-content:center;border-radius:16px;\
+                    background:conic-gradient(from 140deg,#f43f5e,#f59e0b,#22c55e,#0ea5e9,#6366f1,#f43f5e);",
+            {children}
+        }
+    }
+}
+
+/// A silhouette turned into floating glass over whatever is behind it.
+#[story(title = "Surface/GlassShape", tags = ["surface"])]
+pub fn glass_shape(
+    #[default = 180.0] size: f64,
+    #[default = 5.0] refract: f64,
+    #[default = 4.0] split: f64,
+    #[default = 10.0] float: f64,
+    #[default = 1.0] intensity: f64,
+) -> Element {
+    rsx! {
+        Backdrop {
+            GlassShape {
+                size,
+                refract,
+                split,
+                float,
+                intensity,
+            }
+        }
+    }
+}
+
+/// A silhouette screened through a one-bit dither.
+#[story(title = "Surface/DitherShape", tags = ["surface"])]
+pub fn dither_shape(
+    #[default = 180.0] size: f64,
+    #[default = 4.0] cell: f64,
+    #[default = 8.0] float: f64,
+    #[default = 1.0] intensity: f64,
+) -> Element {
+    rsx! {
+        Backdrop {
+            DitherShape {
+                size,
+                cell,
+                float,
+                intensity,
+            }
+        }
+    }
+}
+
+/// A silhouette rebuilt as particles that scatter on hover and spring back.
+#[story(title = "Surface/ParticleShape", tags = ["surface"])]
+pub fn particle_shape(
+    #[default = 180.0] size: f64,
+    #[default = 5.0] cell: f64,
+    #[default = 1.25] scatter: f64,
+    #[default = 1.0] intensity: f64,
+) -> Element {
+    rsx! {
+        Backdrop {
+            ParticleShape {
+                size,
+                cell,
+                scatter,
+                intensity,
+            }
+        }
+    }
+}
+
+/// A lens that leaves the page showing only through character-shaped holes.
+#[story(title = "Surface/Ascii", tags = ["surface"])]
+pub fn ascii(
+    #[default = 15.0] cell: f64,
+    #[default = 170.0] lens: f64,
+    #[default = "rgba(6,10,20,.92)"] ground: String,
+    #[default = 1.0] intensity: f64,
+) -> Element {
+    rsx! {
+        Ascii {
+            class: "story-card",
+            cell,
+            lens,
+            ground,
+            intensity,
+            Panel {}
+        }
+    }
+}
+
+/// Content hung on fabric that breathes, swelling under the pointer.
+#[story(title = "Surface/Cloth", tags = ["surface"])]
+pub fn cloth(
+    #[default = 4.0] thread: f64,
+    #[default = 190.0] fold: f64,
+    #[default = 0.35] sway: f64,
+    #[default = 180.0] reach: f64,
+    #[default = 1.0] intensity: f64,
+) -> Element {
+    rsx! {
+        Cloth {
+            class: "story-card",
+            thread,
+            fold,
+            sway,
+            reach,
+            intensity,
+            Panel {}
+        }
+    }
+}

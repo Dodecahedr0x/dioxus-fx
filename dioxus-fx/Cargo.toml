@@ -1,6 +1,6 @@
 [package]
 name = "dioxus-fx"
-description = "169 dependency-free visual effects and animated components for Dioxus: loaders, spinners, entrance animations, text reveals, hover and cursor effects, and effects that layer over live HTML. Plain CSS, no animation runtime."
+description = "185 dependency-free visual effects and animated components for Dioxus: loaders, spinners, entrance animations, text reveals, hover and cursor effects, and effects that layer over live HTML. Plain CSS, no animation runtime."
 keywords = ["dioxus", "animation", "effects", "components", "ui"]
 categories = ["gui", "web-programming", "wasm"]
 readme = "README.md"
