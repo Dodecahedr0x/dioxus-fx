@@ -1657,7 +1657,7 @@ mask-repeat:repeat,no-repeat;
 mask-composite:intersect
 }
 @supports (animation-timeline:view()){
-.dfx-dissolve{animation:dfx-dissolve-settle linear both;animation-timeline:view(block);animation-range:entry 5% cover 40%}
+.dfx-dissolve{animation:dfx-dissolve-settle linear both;animation-timeline:view(block);animation-range:entry 10% cover 62%}
 }
 "#;
 

@@ -1,9 +1,18 @@
 //! Stories for `dioxus_fx::surface`.
 //!
-//! Every effect here paints over live markup rather than replacing it, so each
-//! preview wraps the same [`Panel`]: a heading, a paragraph and a real link.
+//! Every effect here paints over live markup rather than replacing it, so most
+//! previews wrap the same [`Panel`]: a heading, a paragraph and a real link.
 //! Select the text and follow the link with the effect running — that is the
 //! point of the module.
+//!
+//! Most of these do nothing at all until they are given an input, and a preview
+//! that sits inert is indistinguishable from one that is broken. So every story
+//! needing a hover, a click or a scroll is captioned with one by [`Demo`] —
+//! below the preview rather than inside it, since inside is where the effect
+//! would blur, mask or dither the instruction out of legibility. The two driven
+//! by a scroll timeline additionally get a [`ScrollStage`] to be scrolled in:
+//! the showcase stage is a centred box that never moves, which would leave them
+//! resting flat and settled forever.
 
 use dioxus::prelude::*;
 use dioxus_fx::surface::*;
@@ -17,7 +26,7 @@ const CARD_CSS: &str = ".story-card{border-radius:16px}";
 
 /// The content every surface story layers an effect over.
 #[component]
-pub fn Panel(children: Element) -> Element {
+pub fn Panel() -> Element {
     rsx! {
         document::Style { href: "story:card", {CARD_CSS} }
         div {
@@ -35,7 +44,86 @@ pub fn Panel(children: Element) -> Element {
                 style: "color:#fff;font-weight:600;",
                 "Where the idea comes from"
             }
+        }
+    }
+}
+
+/// Captions a preview with the input it needs.
+///
+/// The caption sits *outside* the effect deliberately. Inside it, it is just
+/// more content for the effect to act on — `Frost` blurs it past reading,
+/// `Laser` masks it away mid-scan, `Ascii` replaces it with glyphs — and an
+/// instruction you cannot read is worse than no instruction at all.
+#[component]
+pub fn Demo(
+    /// What to do to make the effect happen.
+    hint: String,
+    children: Element,
+) -> Element {
+    rsx! {
+        div { style: "display:flex;flex-direction:column;align-items:center;gap:14px;",
             {children}
+            p {
+                style: "max-width:392px;margin:0;text-align:center;opacity:.75;\
+                        font:600 13px/1.45 ui-sans-serif,system-ui,sans-serif;",
+                "{hint}"
+            }
+        }
+    }
+}
+
+/// A scroll viewport for the two effects a scroll timeline drives.
+///
+/// [`Bend`] and [`Dissolve`] are driven by `animation-timeline: view()`, which
+/// measures an element against the nearest scrollport. The showcase stage is a
+/// centred box that never scrolls, so in a plain story neither of them can ever
+/// leave its resting state — flat and settled — and both read as broken. This
+/// gives them a scrollport of their own, with enough runway either side that the
+/// block travels the full timeline.
+#[component]
+pub fn ScrollStage(children: Element) -> Element {
+    rsx! {
+        div {
+            style: "width:392px;height:470px;overflow-y:auto;overscroll-behavior:contain;\
+                    border-radius:18px;background:rgba(128,128,128,.10);padding:0 24px;",
+            div {
+                style: "height:300px;display:flex;align-items:flex-end;justify-content:center;\
+                        padding-bottom:14px;opacity:.65;\
+                        font:600 13px/1.4 ui-sans-serif,system-ui,sans-serif;",
+                "Scroll this panel ↓"
+            }
+            {children}
+            div { style: "height:360px;" }
+        }
+    }
+}
+
+/// Enough copy for a fold or a dissolve to have something to act on.
+///
+/// The short [`Panel`] the other stories use is the wrong shape for both: a
+/// block that is barely taller than a line of text has no visible top and bottom
+/// to fold over, and no room below a dissolve line for the grain to occupy.
+#[component]
+pub fn Column() -> Element {
+    rsx! {
+        div {
+            style: "width:340px;padding:26px 28px;border-radius:16px;\
+                    background:linear-gradient(160deg,#312e81,#0ea5e9 60%,#f59e0b);\
+                    color:#f8fafc;font:15px/1.7 ui-sans-serif,system-ui,sans-serif;",
+            h3 { style: "margin:0 0 10px;font:700 20px/1.2 ui-sans-serif,system-ui,sans-serif;",
+                "Still live HTML"
+            }
+            p { style: "margin:0 0 12px;",
+                "A taller block, because this effect works on the shape of a section rather than on a single line."
+            }
+            p { style: "margin:0 0 12px;",
+                "Everything here is ordinary DOM: select it, tab to the link, read it back with a screen reader."
+            }
+            a {
+                href: "https://github.com/DavidHDev/canvas-ui",
+                style: "color:#fff;font-weight:600;",
+                "Where the idea comes from"
+            }
         }
     }
 }
@@ -49,13 +137,15 @@ pub fn frost(
     #[default = 1.0] intensity: f64,
 ) -> Element {
     rsx! {
-        Frost {
-            class: "story-card",
-            blur,
-            melt,
-            tint,
-            intensity,
-            Panel {}
+        Demo { hint: "Hover the card — the pane melts clear wherever the pointer goes.",
+            Frost {
+                class: "story-card",
+                blur,
+                melt,
+                tint,
+                intensity,
+                Panel {}
+            }
         }
     }
 }
@@ -64,8 +154,10 @@ pub fn frost(
 #[story(title = "Surface/Lens", tags = ["surface"])]
 pub fn lens(#[default = 160.0] size: f64, #[default = 1.0] intensity: f64) -> Element {
     rsx! {
-        Lens { class: "story-card", size: size, intensity: intensity,
-            Panel {}
+        Demo { hint: "Hover and move — the puck sharpens whatever it passes over.",
+            Lens { class: "story-card", size: size, intensity: intensity,
+                Panel {}
+            }
         }
     }
 }
@@ -79,13 +171,15 @@ pub fn ripple(
     #[default = 1.0] intensity: f64,
 ) -> Element {
     rsx! {
-        Ripple {
-            class: "story-card",
-            size,
-            duration,
-            color,
-            intensity,
-            Panel {}
+        Demo { hint: "Click anywhere on the card — a ring spreads from the point you hit.",
+            Ripple {
+                class: "story-card",
+                size,
+                duration,
+                color,
+                intensity,
+                Panel {}
+            }
         }
     }
 }
@@ -94,25 +188,27 @@ pub fn ripple(
 #[story(title = "Surface/Peel", tags = ["surface"])]
 pub fn peel(#[default = 96.0] size: f64) -> Element {
     rsx! {
-        Peel {
-            class: "story-card",
-            size,
-            beneath: rsx! {
+        Demo { hint: "Hover the card — the corner lifts to show the layer underneath.",
+            Peel {
+                class: "story-card",
+                size,
+                beneath: rsx! {
+                    div {
+                        style: "width:100%;height:100%;display:flex;align-items:flex-end;\
+                                justify-content:flex-end;padding:18px 20px;\
+                                background:linear-gradient(135deg,#f43f5e,#f59e0b);\
+                                color:#fff;font:700 15px/1.2 ui-sans-serif,system-ui,sans-serif;",
+                        "Underneath"
+                    }
+                },
                 div {
-                    style: "width:100%;height:100%;display:flex;align-items:flex-end;\
-                            justify-content:flex-end;padding:18px 20px;\
-                            background:linear-gradient(135deg,#f43f5e,#f59e0b);\
-                            color:#fff;font:700 15px/1.2 ui-sans-serif,system-ui,sans-serif;",
-                    "Underneath"
+                    style: "width:340px;padding:28px 30px;\
+                            font:15px/1.6 ui-sans-serif,system-ui,sans-serif;",
+                    h3 { style: "margin:0 0 8px;font:700 19px/1.2 ui-sans-serif,system-ui,sans-serif;",
+                        "Hover this card"
+                    }
+                    p { style: "margin:0;", "Its corner lifts to reveal a second layer." }
                 }
-            },
-            div {
-                style: "width:340px;padding:28px 30px;\
-                        font:15px/1.6 ui-sans-serif,system-ui,sans-serif;",
-                h3 { style: "margin:0 0 8px;font:700 19px/1.2 ui-sans-serif,system-ui,sans-serif;",
-                    "Hover this card"
-                }
-                p { style: "margin:0;", "Its corner lifts to reveal a second layer." }
             }
         }
     }
@@ -122,26 +218,28 @@ pub fn peel(#[default = 96.0] size: f64) -> Element {
 #[story(title = "Surface/Peel/BottomLeft", tags = ["surface"])]
 pub fn peel_bottom_left(#[default = 96.0] size: f64) -> Element {
     rsx! {
-        Peel {
-            class: "story-card",
-            size,
-            corner: PeelCorner::BottomLeft,
-            beneath: rsx! {
+        Demo { hint: "Hover the card — this one hinges on the bottom-left corner instead.",
+            Peel {
+                class: "story-card",
+                size,
+                corner: PeelCorner::BottomLeft,
+                beneath: rsx! {
+                    div {
+                        style: "width:100%;height:100%;display:flex;align-items:flex-start;\
+                                justify-content:flex-start;padding:18px 20px;\
+                                background:linear-gradient(135deg,#0ea5e9,#22c55e);\
+                                color:#fff;font:700 15px/1.2 ui-sans-serif,system-ui,sans-serif;",
+                        "Underneath"
+                    }
+                },
                 div {
-                    style: "width:100%;height:100%;display:flex;align-items:flex-start;\
-                            justify-content:flex-start;padding:18px 20px;\
-                            background:linear-gradient(135deg,#0ea5e9,#22c55e);\
-                            color:#fff;font:700 15px/1.2 ui-sans-serif,system-ui,sans-serif;",
-                    "Underneath"
+                    style: "width:340px;padding:28px 30px;\
+                            font:15px/1.6 ui-sans-serif,system-ui,sans-serif;",
+                    h3 { style: "margin:0 0 8px;font:700 19px/1.2 ui-sans-serif,system-ui,sans-serif;",
+                        "Same card, other corner"
+                    }
+                    p { style: "margin:0;", "All four corners are available." }
                 }
-            },
-            div {
-                style: "width:340px;padding:28px 30px;\
-                        font:15px/1.6 ui-sans-serif,system-ui,sans-serif;",
-                h3 { style: "margin:0 0 8px;font:700 19px/1.2 ui-sans-serif,system-ui,sans-serif;",
-                    "Same card, other corner"
-                }
-                p { style: "margin:0;", "All four corners are available." }
             }
         }
     }
@@ -164,19 +262,21 @@ pub fn vhs(
 /// Broadcast glitch bursts, idle in between.
 #[story(title = "Surface/Glitch", tags = ["surface"])]
 pub fn glitch(
-    #[default = 6.0] period: f64,
+    #[default = 3.0] period: f64,
     #[default = 4.0] shift: f64,
     #[default = 3] bands: usize,
     #[default = 1.0] intensity: f64,
 ) -> Element {
     rsx! {
-        Glitch {
-            class: "story-card",
-            period,
-            shift,
-            bands,
-            intensity,
-            Panel {}
+        Demo { hint: "Wait a moment — the burst is brief, and rare by design.",
+            Glitch {
+                class: "story-card",
+                period,
+                shift,
+                bands,
+                intensity,
+                Panel {}
+            }
         }
     }
 }
@@ -229,12 +329,14 @@ pub fn bubble(
     #[default = 1.0] intensity: f64,
 ) -> Element {
     rsx! {
-        Bubble {
-            class: "story-card",
-            size,
-            count,
-            intensity,
-            Panel {}
+        Demo { hint: "Hover and move — the bubbles lag, so the trail only shows while the pointer travels.",
+            Bubble {
+                class: "story-card",
+                size,
+                count,
+                intensity,
+                Panel {}
+            }
         }
     }
 }
@@ -248,13 +350,15 @@ pub fn mist(
     #[default = 1.0] intensity: f64,
 ) -> Element {
     rsx! {
-        Mist {
-            class: "story-card",
-            blur,
-            part,
-            duration,
-            intensity,
-            Panel {}
+        Demo { hint: "Hover the card — the mist parts around the pointer.",
+            Mist {
+                class: "story-card",
+                blur,
+                part,
+                duration,
+                intensity,
+                Panel {}
+            }
         }
     }
 }
@@ -289,14 +393,16 @@ pub fn tiles(
     #[default = 1.0] intensity: f64,
 ) -> Element {
     rsx! {
-        Tiles {
-            class: "story-card",
-            columns,
-            rows,
-            reach,
-            duration,
-            intensity,
-            Panel {}
+        Demo { hint: "Hover the card — tiles light up in a wave around the pointer.",
+            Tiles {
+                class: "story-card",
+                columns,
+                rows,
+                reach,
+                duration,
+                intensity,
+                Panel {}
+            }
         }
     }
 }
@@ -311,54 +417,45 @@ pub fn honeycomb(
     #[default = 1.0] intensity: f64,
 ) -> Element {
     rsx! {
-        Honeycomb {
-            class: "story-card",
-            columns,
-            rows,
-            lift,
-            glow,
-            intensity,
-            Panel {}
+        Demo { hint: "Hover the card — the hexes shine where the pointer goes.",
+            Honeycomb {
+                class: "story-card",
+                columns,
+                rows,
+                lift,
+                glow,
+                intensity,
+                Panel {}
+            }
         }
     }
 }
 
-/// A beam that scans down and reveals the content behind it. Change a control
-/// to replay it.
+/// A beam that scans down and reveals the content behind it.
+///
+/// The component scans once and stops, which is right for an entrance and
+/// useless in a gallery — the preview would finish before you had read the
+/// story title. So `repeat` opens on the loop here; turn it off for the
+/// documented one-shot.
 #[story(title = "Surface/Laser", tags = ["surface"])]
 pub fn laser(
     #[default = "#f43f5e"] color: String,
-    #[default = 1.8] duration: f64,
-    #[default = 2.0] thickness: f64,
-    #[default = 1.0] intensity: f64,
-) -> Element {
-    rsx! {
-        Laser {
-            class: "story-card",
-            color,
-            duration,
-            thickness,
-            intensity,
-            Panel {}
-        }
-    }
-}
-
-/// The same scan on a loop, wiping and redrawing the content each pass.
-#[story(title = "Surface/Laser/Repeat", tags = ["surface"])]
-pub fn laser_repeat(
-    #[default = "#22d3ee"] color: String,
     #[default = 3.0] duration: f64,
+    #[default = 2.0] thickness: f64,
+    #[default = true] repeat: bool,
     #[default = 1.0] intensity: f64,
 ) -> Element {
     rsx! {
-        Laser {
-            class: "story-card",
-            color,
-            duration,
-            repeat: true,
-            intensity,
-            Panel {}
+        Demo { hint: "Scanning on a loop. Turn `repeat` off for the single pass it does by default — reload the story to replay it.",
+            Laser {
+                class: "story-card",
+                color,
+                duration,
+                thickness,
+                repeat,
+                intensity,
+                Panel {}
+            }
         }
     }
 }
@@ -373,14 +470,16 @@ pub fn shatter(
     #[default = 1.0] intensity: f64,
 ) -> Element {
     rsx! {
-        Shatter {
-            class: "story-card",
-            shards,
-            rings,
-            duration,
-            color,
-            intensity,
-            Panel {}
+        Demo { hint: "Click the card — the glass breaks around the point you hit, and again wherever you click next.",
+            Shatter {
+                class: "story-card",
+                shards,
+                rings,
+                duration,
+                color,
+                intensity,
+                Panel {}
+            }
         }
     }
 }
@@ -394,13 +493,15 @@ pub fn stipple(
     #[default = 1.0] intensity: f64,
 ) -> Element {
     rsx! {
-        Stipple {
-            class: "story-card",
-            cell,
-            blur,
-            focus,
-            intensity,
-            Panel {}
+        Demo { hint: "Hover the card — the grain resolves back into crisp UI around the pointer.",
+            Stipple {
+                class: "story-card",
+                cell,
+                blur,
+                focus,
+                intensity,
+                Panel {}
+            }
         }
     }
 }
@@ -415,20 +516,25 @@ pub fn liquid(
     #[default = 1.0] intensity: f64,
 ) -> Element {
     rsx! {
-        Liquid {
-            class: "story-card",
-            size,
-            count,
-            swirl,
-            hue,
-            intensity,
-            Panel {}
+        Demo { hint: "Hover and move — the fluid smears after the pointer.",
+            Liquid {
+                class: "story-card",
+                size,
+                count,
+                swirl,
+                hue,
+                intensity,
+                Panel {}
+            }
         }
     }
 }
 
-/// Content below a line dissolved into grains that reassemble on scroll. Scroll
-/// the preview to settle it.
+/// Content below a line dissolved into grains that reassemble on scroll.
+///
+/// Scroll the panel itself: the grain is driven by the block's position in its
+/// scrollport, so it settles as the block rises into view and lets go again as
+/// it leaves.
 #[story(title = "Surface/Dissolve", tags = ["surface"])]
 pub fn dissolve(
     #[default = 45.0] line: f64,
@@ -437,18 +543,27 @@ pub fn dissolve(
     #[default = 1.0] intensity: f64,
 ) -> Element {
     rsx! {
-        Dissolve {
-            class: "story-card",
-            line,
-            cell,
-            blur,
-            intensity,
-            Panel {}
+        Demo { hint: "Scroll the panel — the grain below the line settles into solid content as the block rises into view.",
+            ScrollStage {
+                Dissolve {
+                    class: "story-card",
+                    line,
+                    cell,
+                    blur,
+                    intensity,
+                    Column {}
+                }
+            }
         }
     }
 }
 
-/// A block that folds away over a virtual edge as the page scrolls past it.
+/// A block that folds away over a virtual edge as it scrolls past.
+///
+/// Scroll the panel itself. The fold is the block's own position in its
+/// scrollport, so it needs both a scrollport and a block tall enough to have a
+/// top and a bottom — a short card in a stage that never scrolls stays flat,
+/// which looks identical to the effect not working.
 #[story(title = "Surface/Bend", tags = ["surface"])]
 pub fn bend(
     #[default = 34.0] angle: f64,
@@ -457,13 +572,17 @@ pub fn bend(
     #[default = 1.0] intensity: f64,
 ) -> Element {
     rsx! {
-        Bend {
-            class: "story-card",
-            angle,
-            perspective,
-            zone,
-            intensity,
-            Panel {}
+        Demo { hint: "Scroll the panel — the block folds away over the edge at each end and lies flat in the middle.",
+            ScrollStage {
+                Bend {
+                    class: "story-card",
+                    angle,
+                    perspective,
+                    zone,
+                    intensity,
+                    Column {}
+                }
+            }
         }
     }
 }
@@ -533,12 +652,14 @@ pub fn particle_shape(
     #[default = 1.0] intensity: f64,
 ) -> Element {
     rsx! {
-        Backdrop {
-            ParticleShape {
-                size,
-                cell,
-                scatter,
-                intensity,
+        Demo { hint: "Hover the shape — the cloud flies apart, and springs back when you leave.",
+            Backdrop {
+                ParticleShape {
+                    size,
+                    cell,
+                    scatter,
+                    intensity,
+                }
             }
         }
     }
@@ -553,13 +674,15 @@ pub fn ascii(
     #[default = 1.0] intensity: f64,
 ) -> Element {
     rsx! {
-        Ascii {
-            class: "story-card",
-            cell,
-            lens,
-            ground,
-            intensity,
-            Panel {}
+        Demo { hint: "Hover the card — inside the lens the page shows only through the glyphs.",
+            Ascii {
+                class: "story-card",
+                cell,
+                lens,
+                ground,
+                intensity,
+                Panel {}
+            }
         }
     }
 }
@@ -574,14 +697,16 @@ pub fn cloth(
     #[default = 1.0] intensity: f64,
 ) -> Element {
     rsx! {
-        Cloth {
-            class: "story-card",
-            thread,
-            fold,
-            sway,
-            reach,
-            intensity,
-            Panel {}
+        Demo { hint: "Hover the card — the cloth swells under the pointer.",
+            Cloth {
+                class: "story-card",
+                thread,
+                fold,
+                sway,
+                reach,
+                intensity,
+                Panel {}
+            }
         }
     }
 }

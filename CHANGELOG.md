@@ -70,6 +70,25 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Every `surface` story now demonstrates the effect it is named after. Most of
+  the module does nothing until it is hovered, clicked or scrolled, and a
+  preview sitting inert is indistinguishable from one that is broken, so each
+  story that needs an input is now captioned with it — below the preview rather
+  than inside it, since inside is where `Frost` blurs the instruction past
+  reading and `Laser` masks it away mid-scan. `Bend` and
+  `Dissolve` get a scroll viewport of their own: both are driven by
+  `animation-timeline: view()`, which measures an element against its nearest
+  scrollport, and the showcase stage is a centred box that never scrolls — so
+  in a plain story neither could ever leave its resting state. `Bend` also gets
+  a block tall enough to have a top and a bottom to fold over, rather than the
+  one-line card it shared with everything else. `Laser` opens on its looping
+  form, since the one-shot it does by default finishes before the story has
+  finished loading, and `Glitch` bursts every 3s rather than every 6s so the
+  burst can be caught at all.
+- `Dissolve` settles over `entry 10% cover 62%` rather than `entry 5% cover
+  40%`. The old range reached solid content while the block was still only 86%
+  on screen, so the grain was never visible on anything readable — the whole
+  effect happened below the fold and then stopped.
 - The gallery builds against
   [dioxus-showcase](https://github.com/Dodecahedr0x/dioxus-showcase) 0.1.1, up
   from 0.0.7. Stories now register themselves at link time rather than through
